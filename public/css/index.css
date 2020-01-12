@@ -1,0 +1,98 @@
+.search {
+    margin-top: 20px;
+}
+.contact-container {
+    padding: 20px;
+}
+.alphabet {
+    padding: 10px 20px;
+    font-size: 2em;
+    font-weight: bold;
+}
+.card-container {
+    padding: 10px;
+}
+.contact-card {
+    position: relative;
+    display: flex;
+    cursor: pointer;
+    padding: 0 !important;
+}
+.card-image {
+    display: flex;
+    align-items: center;
+    padding: 24px;
+}
+.card-image img {
+    width: 30px;
+    border-radius: 100%;
+}
+.card-content {
+    align-items: center;
+    display: flex;
+    width: -webkit-fill-available;
+}
+.contact-name {
+    font-weight: 500;
+    flex: 1;
+    font-size: 1.1em;
+}
+.infograph {
+    display: flex;
+    justify-content: space-between;
+    width: 60px;
+    margin-right: 12px;
+}
+.info_g {
+    display: flex;
+    align-items: center;
+}
+.info_g i {
+    margin-right: 2px;
+}
+.icon {
+    font-size: 15px;
+}
+.info {
+    padding-top: 3px;
+}
+.row .col {
+    padding: 5px 0.75rem;
+}
+.close {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: 1px solid lightgray;
+    border-radius: 100%;
+}
+/* Expanded view properties */
+.card-expand {
+    flex-direction: column;
+}
+.card-image-expand{
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding-bottom: 10px;
+    padding-top: 15px;
+}
+.image-expand {
+    width: 50px !important;
+    transition: all 0.3s ease;
+}
+.content-expand {
+    flex-direction: column;
+    height: fit-content;
+    transition: all 0.3s ease;
+}
+.contact-details {
+    display: none;
+    flex-direction: column;
+    width: -webkit-fill-available;
+    align-items: center;
+    height: 89px;
+}
+.close-expand {
+    display: flex;
+}
