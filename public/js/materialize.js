@@ -8615,6 +8615,9 @@ $jscomp.polyfill = function (e, r, p, m) {
               transform: 'scale(' + scaleFactor + ')',
               transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
             });
+            _this51.$menu.css({
+              display: 'flex'
+            });
             _this51.$menu.children('li').children('a').css({
               opacity: 1
             });
@@ -8648,14 +8651,17 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.$el.removeClass('active');
         this.$el.css({
           'background-color': 'transparent',
-          transition: 'none'
+          // transition: 'none'
         });
         this.$anchor.css({
-          transition: 'none'
+          // transition: 'none'
         });
         backdrop.css({
           transform: 'scale(0)',
           'background-color': fabColor
+        });
+        _this52.$menu.css({
+          display: 'none'
         });
         this.$menu.children('li').children('a').css({
           opacity: ''
@@ -8672,24 +8678,24 @@ $jscomp.polyfill = function (e, r, p, m) {
             left: '',
             overflow: '',
             'background-color': '',
-            transform: 'translate3d(' + -_this52.offsetX + 'px,0,0)'
+            transform: 'translate3d(10px,10,0)'
           });
           _this52.$anchor.css({
             overflow: '',
-            transform: 'translate3d(0,' + _this52.offsetY + 'px,0)'
+            transform: 'translate3d(10px,10, 0)'
           });
 
           setTimeout(function () {
             _this52.$el.css({
-              transform: 'translate3d(0,0,0)',
+              transform: 'translate3d(0px, 0px, 0px)',
               transition: 'transform .2s'
             });
             _this52.$anchor.css({
-              transform: 'translate3d(0,0,0)',
+              transform: 'translate3d(0px, 0px, 0px)',
               transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
             });
           }, 20);
-        }, 200);
+        }, 50);
       }
     }], [{
       key: "init",

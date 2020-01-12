@@ -5,6 +5,22 @@ window.onload = async function () {
     // Fetch contact-details list.
     let contacts = await fetchContactDetails();
     initializeInterface(contacts);
+
+    // Floating button initialization.
+    $(document).ready(function(){
+        $('.fixed-action-btn').floatingActionButton({
+            toolbarEnabled: true
+        });
+    });
+
+    // Tooltip initialization
+    $(document).ready(function(){
+        $('.tooltipped').tooltip();
+      });
+   
+    // Copy contacts on click
+    toastableContact();
+
 }
 
 function initializeInterface(contacts) {
@@ -30,7 +46,7 @@ function fetchContactDetails() {
         xmlhttp.onreadystatechange = function () {
             console.log(xmlhttp.responseText);
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                resolve([JSON.parse(xmlhttp.responseText)]);
+                resolve(JSON.parse(xmlhttp.responseText));
             }
         }   
         xmlhttp.open('GET', '/loadContacts', true);
@@ -60,14 +76,12 @@ function fetchContactDetails() {
  */
 
  function loadCards(contact_details) {
-     console.log(contact_details);
     let element = document.querySelector('.card-container .row');
     for (let i = 0; i < contact_details.length; i++) {
         console.log('looping');
         let card_str = makeCards(contact_details[i]);
         let card_html = new DOMParser().parseFromString(card_str, "text/html");
         let card_body = card_html.querySelector('body .card-parent');
-        console.log(card_body);
         // // let htm_str = '<div class="col x12 s12 m6 l4 xl3 card-parent"> <div class="card-panel hoverable contact-card"><div class="card-image"><img src="img/office.jpg" alt="icon"></div><div class="card-content"><div class="contact-name"><span class="truncate">Rabindranath Tagore</span></div><div class="infograph"><div class="info_g"><i class="material-icons prefix icon">phone</i><span class="phone-count">2  </span></div><div class="info_g"><i class="material-icons prefix icon">mail_outline</i><span class="mail-count">1</span></div></div><div class="contact-details"><div class="contact-content"><div class="info"><i class="material-icons prefix icon">phone</i><span class="phone contact">+919737177329</span></div></div><div class="contact-content"><div class="info"><i class="material-icons prefix icon">mail_outline</i><span class="mail contact">mastermindjim@gmail.com</span></div></div></div></div></div></div>';
         element.appendChild(card_body);
     }
@@ -106,9 +120,10 @@ function makeCards(contact) {
                 let mail_info = info('mail_outline', mail_contact, mail_count);
                 return '<div class="contact-details">' + phone_info + mail_info + '</div>';
             }
-            let close = '<div class="close"><i class="material-icons prefix tooltipped-s" data-position="top" data-tooltip="Collapse">clear</i></div>';
-
-            return '<div class="card-content">' + name + infograph() + contact_details() + close + '</div>';
+            let close = '<div class="close red"><i class="material-icons prefix tooltipped-s" data-position="top" data-tooltip="Collapse">clear</i></div>';
+            let fab = '<div class="fixed-action-btn toolbar menu"><a class="btn-floating red"><i class="material-icons small">mode_edit</i></a><ul><li class="tooltipped" data-position="bottom" data-tooltip="Edit"><a class="btn-floating"><i class="material-icons">edit</i></a></li><li class="tooltipped" data-position="bottom" data-tooltip="Delete"><a class="btn-floating"><i class="material-icons">delete</i></a></li><li class="tooltipped" data-position="bottom" data-tooltip="Download"><a class="btn-floating"><i class="material-icons">file_download</i></a></li><li class="tooltipped" data-position="bottom" data-tooltip="More"><a class="btn-floating"><i class="material-icons">info</i></a></li></ul></div>';
+            
+            return '<div class="card-content">' + name + infograph() + contact_details() + close + fab +'</div>';
         }
         return '<div class="card-panel hoverable contact-card">' + icon + card_content() + '</div>';
     }
@@ -203,7 +218,6 @@ function outsideCardClick(target) {
         }
     }
 }
-
 
 /**
  * Toggles cards collapse / expand state.
@@ -320,6 +334,7 @@ function toggleCardContent(card, callback) {
         contact_details.style.display = 'flex';
         assignGcard(card);
         toggleCollapseButton(card, true);
+        toggleFAB(card, true);
     }
     else {
         card_content.children[0].style.flex = 1;
@@ -327,6 +342,7 @@ function toggleCardContent(card, callback) {
         contact_details.style.display = 'none';
         nullifyGCard();
         toggleCollapseButton(card, false);
+        toggleFAB(card, false);
     }
 }
 
@@ -374,7 +390,7 @@ function assignGcard(card) {
 
 function toggleCollapseButton(card, bool) {
     const close = card.querySelector('.close');
-    if(bool) {
+    if (bool) {
         close.style.display = 'flex';
         console.log('close opened');
     } else {
@@ -383,10 +399,40 @@ function toggleCollapseButton(card, bool) {
     }
 } 
 
+function toggleFAB(card, bool) {
+    const fab = card.querySelector('.menu');
+    if (bool) {
+        fab.style.display = 'block';
+    } else {
+        fab.style.display = 'none';
+    }
+}
+
 /**
  * Sets global g_card to null
  */
 
 function nullifyGCard() {
     g_card = null;
+}
+
+function toastableContact() {
+    const infos = document.querySelectorAll('.info');
+    infos.forEach(info => {
+        info.addEventListener('click', function () {
+            const contact = info.querySelector('.contact').innerText;
+            contactToClipboard(contact);
+        });
+    })
+}
+
+function contactToClipboard(value) {
+    let input = document.createElement('input');
+    input.setAttribute('value', value);
+    document.body.appendChild(input);
+    input.select();
+    let result = document.execCommand('copy');
+    document.body.removeChild(input);
+    M.toast({html: 'Copied to clipboard!', classes: 'rounded'});
+    return result;
 }

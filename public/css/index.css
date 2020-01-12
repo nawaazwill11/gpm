@@ -54,7 +54,17 @@
     font-size: 15px;
 }
 .info {
-    padding-top: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px;
+}
+.info:hover {
+    background-color: tomato;
+    transition: background 0.5s ease;
+}
+.contact {
+    margin-left: 5px;
 }
 .row .col {
     padding: 5px 0.75rem;
@@ -66,6 +76,22 @@
     right: 10px;
     border: 1px solid lightgray;
     border-radius: 100%;
+}
+.menu {
+    display: none;
+    top: 0;
+    right: 0;
+    position: relative !important;
+}
+.btn-floating .small {
+    font-size: large !important;
+}
+.divider {
+    width: 100%;
+    margin: 10px 0;
+}
+.card-content .red i {
+    color: white;
 }
 /* Expanded view properties */
 .card-expand {
