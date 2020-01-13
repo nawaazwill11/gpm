@@ -83,13 +83,13 @@
                             </div>
                             <div class="fixed-action-btn toolbar menu">
                                 <a class="btn-floating red">
-                                  <i class="material-icons small">mode_edit</i>
+                                  <i class="material-icons">menu</i>
                                 </a>
                                 <ul>
-                                    <li class="tooltipped" data-position="bottom" data-tooltip="Edit"><a class="btn-floating"><i class="material-icons">edit</i></a></li>
-                                    <li class="tooltipped" data-position="bottom" data-tooltip="Delete"><a class="btn-floating"><i class="material-icons">delete</i></a></li>
-                                    <li class="tooltipped" data-position="bottom" data-tooltip="Download"><a class="btn-floating"><i class="material-icons">file_download</i></a></li>
-                                    <li class="tooltipped" data-position="bottom" data-tooltip="More"><a class="btn-floating"><i class="material-icons">info</i></a></li>
+                                    <li class="tooltipped menu-item" data-position="bottom" data-tooltip="Edit"><a class="btn-floating"><i class="material-icons">edit</i></a></li>
+                                    <li class="tooltipped menu-item" data-position="bottom" data-tooltip="Delete"><a class="btn-floating"><i class="material-icons">delete</i></a></li>
+                                    <li class="tooltipped menu-item" data-position="bottom" data-tooltip="Download"><a class="btn-floating"><i class="material-icons">file_download</i></a></li>
+                                    <li class="tooltipped menu-item" data-position="bottom" data-tooltip="More"><a class="btn-floating"><i class="material-icons">info</i></a></li>
                                 </ul>
                             </div>
                         </div>

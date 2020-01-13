@@ -25,7 +25,6 @@ window.onload = async function () {
 
 function initializeInterface(contacts) {
     if (contacts) {
-        console.log('Initializing');
         // Initiate card loading process.
         loadCards(contacts);
         
@@ -44,7 +43,7 @@ function fetchContactDetails() {
     return new Promise((resolve, reject) => {
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
-            console.log(xmlhttp.responseText);
+
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 resolve(JSON.parse(xmlhttp.responseText));
             }
@@ -56,7 +55,6 @@ function fetchContactDetails() {
         return data;
     })
     .catch(error => {
-        console.error(error);
     });
    
     // return [{
@@ -78,13 +76,15 @@ function fetchContactDetails() {
  function loadCards(contact_details) {
     let element = document.querySelector('.card-container .row');
     for (let i = 0; i < contact_details.length; i++) {
-        console.log('looping');
         let card_str = makeCards(contact_details[i]);
         let card_html = new DOMParser().parseFromString(card_str, "text/html");
         let card_body = card_html.querySelector('body .card-parent');
         // // let htm_str = '<div class="col x12 s12 m6 l4 xl3 card-parent"> <div class="card-panel hoverable contact-card"><div class="card-image"><img src="img/office.jpg" alt="icon"></div><div class="card-content"><div class="contact-name"><span class="truncate">Rabindranath Tagore</span></div><div class="infograph"><div class="info_g"><i class="material-icons prefix icon">phone</i><span class="phone-count">2  </span></div><div class="info_g"><i class="material-icons prefix icon">mail_outline</i><span class="mail-count">1</span></div></div><div class="contact-details"><div class="contact-content"><div class="info"><i class="material-icons prefix icon">phone</i><span class="phone contact">+919737177329</span></div></div><div class="contact-content"><div class="info"><i class="material-icons prefix icon">mail_outline</i><span class="mail contact">mastermindjim@gmail.com</span></div></div></div></div></div></div>';
         element.appendChild(card_body);
     }
+
+    // Add event listeners to new cards
+    addCardEventListeners();
 }
 
 /**
@@ -121,7 +121,7 @@ function makeCards(contact) {
                 return '<div class="contact-details">' + phone_info + mail_info + '</div>';
             }
             let close = '<div class="close red"><i class="material-icons prefix tooltipped-s" data-position="top" data-tooltip="Collapse">clear</i></div>';
-            let fab = '<div class="fixed-action-btn toolbar menu"><a class="btn-floating red"><i class="material-icons small">mode_edit</i></a><ul><li class="tooltipped" data-position="bottom" data-tooltip="Edit"><a class="btn-floating"><i class="material-icons">edit</i></a></li><li class="tooltipped" data-position="bottom" data-tooltip="Delete"><a class="btn-floating"><i class="material-icons">delete</i></a></li><li class="tooltipped" data-position="bottom" data-tooltip="Download"><a class="btn-floating"><i class="material-icons">file_download</i></a></li><li class="tooltipped" data-position="bottom" data-tooltip="More"><a class="btn-floating"><i class="material-icons">info</i></a></li></ul></div>';
+            let fab = '<div class="fixed-action-btn toolbar menu"><a class="btn-floating red"><i class="material-icons">menu</i></a><ul><li class="tooltipped menu-item" data-position="bottom" data-tooltip="Edit"><a class="btn-floating"><i class="material-icons">edit</i></a></li><li class="tooltipped menu-item" data-position="bottom" data-tooltip="Delete"><a class="btn-floating"><i class="material-icons">delete</i></a></li><li class="tooltipped menu-item" data-position="bottom" data-tooltip="Download"><a class="btn-floating"><i class="material-icons">file_download</i></a></li><li class="tooltipped menu-item" data-position="bottom" data-tooltip="More"><a class="btn-floating"><i class="material-icons">info</i></a></li></ul></div>';
             
             return '<div class="card-content">' + name + infograph() + contact_details() + close + fab +'</div>';
         }
@@ -184,7 +184,7 @@ function closeClickEvent() {
         close.addEventListener('click', function (e) {
             e.stopPropagation();
             const parent_card = e.target.closest('.card-parent');
-            console.log('Me first');
+
             cardViewToggler(parent_card);
         });
     });
@@ -235,18 +235,28 @@ function cardViewToggler(card, bool) {
     let active = isActive(card);
     if (active) {
         if (bool) {
-            console.log('active->ignoring');
+            consoler('active->ignoring');
             return '';
         }
-        console.log('active->deactivating');
         removeClass(card, 'active');
         toggleContactCardExpand(card, removeClass);
+        consoler('active->deactivating');
     }
     else {
-        console.log('inactive->activing');
         addClass(card, 'active');
         toggleContactCardExpand(card, addClass);
+        consoler('inactive->activating');
     }
+}
+
+/**
+ * End-point function to print messages on console.
+ * 
+ * @param {String} msg 
+ */
+
+function consoler(msg) {
+    console.log(msg);
 }
 
 /**
@@ -392,10 +402,8 @@ function toggleCollapseButton(card, bool) {
     const close = card.querySelector('.close');
     if (bool) {
         close.style.display = 'flex';
-        console.log('close opened');
     } else {
         close.style.display = 'none';
-        console.log('close closed');
     }
 } 
 
@@ -416,6 +424,50 @@ function nullifyGCard() {
     g_card = null;
 }
 
+
+function addCardEventListeners() {
+    
+    menuItemsEventListeners();
+}
+
+function menuItemsEventListeners() {
+    const menu_items = document.querySelectorAll('.menu-item');
+    menu_items.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.stopPropagation(); // disbales on card click event.
+            const parent = this.closest('.card-parent');
+            const parent_rect = parent.getBoundingClientRect();
+            const offsetX = parent_rect.left - window.innerWidth / 2 + parent_rect.width / 2;
+            const offsetY = parent_rect.top - window.innerHeight / 2 + parent_rect.height / 2
+            const style = document.createElement('style');
+            style.type = 'text/css';
+            styleText = '.fullscreen {position: absolute;transition: all 0.5s ease 0s;transform: translate3d(' + -offsetX + 'px, ' + -offsetY + 'px, 0);left: 0px !important;z-index: 100;display: flex;justify-content: center;width:'+ window.innerWidth +'px}';            
+            style.innerHTML = styleText;
+            document.getElementsByTagName('head')[0].appendChild(style);
+            parent.classList.add('fullscreen');
+
+            const overlay = $('<div class="overlay">');
+            $('body').append(overlay);
+            overlay.css({
+                position: 'absolute',
+                height: '-webkit-fill-available',
+                width: '-webkit-fill-available',
+                left: 0,
+                top: 0,
+                backgroundColor: '#d3d3d3c2',
+                position: 'fixed',
+            });
+            overlay.click(function () {
+                parent.classList.remove('fullscreen');
+                this.remove();
+            });
+        });
+    });
+}
+/**
+ * Adds click events to contacts
+ */
+
 function toastableContact() {
     const infos = document.querySelectorAll('.info');
     infos.forEach(info => {
@@ -426,6 +478,12 @@ function toastableContact() {
     })
 }
 
+
+/**
+ * Copies contents to clipboard.
+ * 
+ * @param  {String} value
+ */
 function contactToClipboard(value) {
     let input = document.createElement('input');
     input.setAttribute('value', value);

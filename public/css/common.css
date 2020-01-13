@@ -1,5 +1,42 @@
+body {
+    font-size: larger;
+}
+
+nav {
+    width: -webkit-fill-available;
+}
+
+
+@media screen and (max-width: 1410px) {
+    .card-parent {
+        width: 33.3333333333% !important;
+    }
+}
+@media screen and (max-width: 1032px) {
+    .card-parent {
+        width: 50% !important;
+    }
+}
+
+@media screen and (max-width: 690px) {
+    .card-parent {
+        width: 100% !important;
+    }
+}
+@media screen and (max-width: 360px) {
+    body {
+        font-size: small;
+    }
+}
 @media screen and (min-width: 993px) {
     .brand-logo {
         margin-left: 30px;
     }
+}
+
+@media screen and (min-width: 1993px) {
+    .container, .contact-container {
+        max-width: 1993px !important;
+    }
+    
 }

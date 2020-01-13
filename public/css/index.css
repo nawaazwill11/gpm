@@ -10,18 +10,19 @@
     font-weight: bold;
 }
 .card-container {
-    padding: 10px;
+    
 }
 .contact-card {
     position: relative;
     display: flex;
     cursor: pointer;
     padding: 0 !important;
+    width: fit-content;
 }
 .card-image {
     display: flex;
     align-items: center;
-    padding: 24px;
+    padding: 24px 10px;
 }
 .card-image img {
     width: 30px;
@@ -86,12 +87,14 @@
 .btn-floating .small {
     font-size: large !important;
 }
-.divider {
-    width: 100%;
-    margin: 10px 0;
-}
 .card-content .red i {
     color: white;
+}
+.menu-item a {
+    border-radius: 0;
+}
+.btn-floating i:hover {
+    background-color: #ff8a80;
 }
 /* Expanded view properties */
 .card-expand {
