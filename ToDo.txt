@@ -1,7 +1,8 @@
-. Add Details View.
+#. Add Details View. 
+#. Add count per alphabet row.
+#. Sort by alphabet (cards under alphabet-wise row).
+. Replace info icon with close icon in detail view.
 . Add Edit View.
 . Add interaction (phone number=> call, mail => send) buttons.
-. Sort by alphabet (cards under alphabet-wise row).
 . Empty icon placeholder.
-. Add count per alphabet row.
 . Add smooth transition.

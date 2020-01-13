@@ -11,7 +11,7 @@ class DataController extends Controller
         array(
           array (
             'icon' => 'img/office.jpg',
-            'name' => 'Rabindranath Tagore',
+            'name' => 'XRabindranath Tagore',
             'contact' => 
             array (
               'phone' => 
@@ -27,7 +27,7 @@ class DataController extends Controller
           ),
           array (
             'icon' => 'img/office.jpg',
-            'name' => 'Rabindranath Tagore',
+            'name' => 'DRabindranath Tagore',
             'contact' => 
             array (
               'phone' => 
@@ -43,7 +43,7 @@ class DataController extends Controller
           ),
           array (
             'icon' => 'img/office.jpg',
-            'name' => 'Rabindranath Tagore',
+            'name' => 'PRabindranath Tagore',
             'contact' => 
             array (
               'phone' => 
@@ -59,7 +59,7 @@ class DataController extends Controller
           ),
           array (
             'icon' => 'img/office.jpg',
-            'name' => 'Rabindranath Tagore',
+            'name' => 'TRabindranath Tagore',
             'contact' => 
             array (
               'phone' => 
@@ -75,7 +75,23 @@ class DataController extends Controller
           ),
           array (
             'icon' => 'img/office.jpg',
-            'name' => 'Rabindranath Tagore',
+            'name' => 'AARabindranath Tagore',
+            'contact' => 
+            array (
+              'phone' => 
+              array (
+                0 => '+919737177329',
+                1 => '+919558484794',
+              ),
+              'email' => 
+              array (
+                0 => 'mastermindjim@gmail.com',
+              ),
+            ),
+          ),
+          array (
+            'icon' => 'img/office.jpg',
+            'name' => 'ARabindranath Tagore',
             'contact' => 
             array (
               'phone' => 

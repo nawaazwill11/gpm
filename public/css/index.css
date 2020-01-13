@@ -17,7 +17,7 @@
     display: flex;
     cursor: pointer;
     padding: 0 !important;
-    width: fit-content;
+    /* width: fit-content; */
 }
 .card-image {
     display: flex;

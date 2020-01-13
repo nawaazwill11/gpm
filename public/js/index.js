@@ -26,8 +26,8 @@ window.onload = async function () {
 function initializeInterface(contacts) {
     if (contacts) {
         // Initiate card loading process.
-        loadCards(contacts);
-        
+        generateLevels(contacts);
+
         // Add event listeners to cards.
         addListeners();
     }
@@ -68,18 +68,177 @@ function fetchContactDetails() {
 }
 
 /**
+ * Returns sorted contacts and letters for creating levels.
+ * 
+ * @param {Array} contacts 
+ */
+
+function generateLevels(contacts) {
+    contacts = contactNamesCapitalize(contacts);
+    let contact_names = getContactNames(contacts);
+    let {sorted_names, sorted_contacts} = sortContactsByName(contacts, contact_names);
+    let letter_sequence = getUniqueAlphabets(sorted_names);
+    let letter_paired_contacts = pairContactsWithLetters(sorted_contacts, letter_sequence);
+    consoler(letter_paired_contacts);
+    loadLevels(letter_paired_contacts);
+}
+
+/**
+ * Capitalizes the first letter of all contact names and
+ * returns contacts object.
+ * 
+ * @param {Array} contacts 
+ * 
+ * @return {Array}
+ */
+
+function contactNamesCapitalize(contacts) {
+    
+    for(let i = 0; i < contacts.length; i++) {
+        contacts[i].name = contacts[i].name[0].toUpperCase() + contacts[i].name.slice(1, );
+    }
+    console.log(contacts);
+    return contacts;
+}
+
+/**
+ * Return non-empty contact names.
+ * 
+ * @param {Array} contacts
+ * 
+ * @return {Map} 
+ */
+
+function getContactNames(contacts) {
+    return contacts.map(function (contact, index, c_list) {
+        if (!$.trim(contact.name)) return 'empty';
+        return contact.name;
+    });
+}
+
+/**
+ * Sorts contacts by name and returns 
+ * a sorted names' list and 
+ * name-sorted contact object list.
+ * 
+ * @param {Array} names 
+ * 
+ * @return {Object}
+ */
+
+function sortContactsByName(contacts, name_list) {
+    // contacts = JSON.parse(JSON.stringify(contacts)); // deep copy
+    let sorted_names = name_list.sort();
+    let sorted_contacts = [];
+    let empty_contacts = [];
+    let numeric_contact_names = [];
+
+    for(let i = 0; i < sorted_names.length; i++) {
+        for(let j = 0; j < contacts.length; j++) {
+            if (sorted_names[i] === contacts[j].name) {
+                sorted_contacts.push(contacts[j]);
+                contacts.splice(j, 1);
+                break;
+            }
+        }
+    }
+
+    return {sorted_names: sorted_names, sorted_contacts: sorted_contacts};
+}
+
+/**
+ * Return set of alphabets.
+ * 
+ * @param {Array} name_list 
+ * 
+ * @return {Array}
+ */
+
+function getUniqueAlphabets(name_list) {
+    let unique_letters = [];
+    name_list.forEach(name => {
+        if(unique_letters.indexOf(name[0]) === -1) {
+            unique_letters.push(name[0]);
+        }
+    });
+    return unique_letters;
+}
+
+/**
+ * Return a list of objects containing pair of
+ * letters with associative contact object.
+ * 
+ * @param {Array} sorted_contacts 
+ * @param {Array} letter_sequence 
+ * 
+ * @return {Array}
+ */
+
+function pairContactsWithLetters(sorted_contacts, letter_sequence) {
+    let paired_contacts = [];
+    letter_sequence.forEach(letter => {
+        let pair = {
+            letter: letter,
+            contacts: []
+        };
+        sorted_contacts.forEach(contact=> {
+            if (contact.name[0] === letter) {
+                pair.contacts.push(contact);
+            }
+        });
+        paired_contacts.push(pair);
+    });
+    return paired_contacts;
+}
+
+/**
+ * Adds cards to page under their associated letter.
+ * 
+ * @param {Array} contacts 
+ */
+
+function makeLevel(contact) {
+    let alphabet_level = function () {
+        let alphabet = function () {
+            return '<div class="alphabet"><span>' + contact.letter + '</span></div>';
+        }
+        // console.log(alphabet());
+        let divider = '<div class="divider"></div>';
+        let card_container = function () {
+            let row = function () {
+                let cards = '';
+
+                for (let i = 0; i < contact.contacts.length; i++) {
+                    let card_str = makeCards(contact.contacts[i]);
+                    cards += card_str;
+                }
+                // consoler(cards);
+                return '<div class="row">' + cards + '</div>';
+            }
+            // consoler(row());
+            return '<div class="card-container">' + row() + '</div>';
+        }
+        // consoler(card_container());
+        return '<div class="alphabet-level">' + alphabet() + divider + card_container() + '</div>';
+    }
+    // consoler(alphabet_level());
+    return alphabet_level();
+}
+
+/**
  * Loads cards into view.
  * 
  * @param  {Array} contact_details
+ * 
  */
 
- function loadCards(contact_details) {
-    let element = document.querySelector('.card-container .row');
+function loadLevels(contact_details) {
+    let element = document.querySelector('.contact-container');
     for (let i = 0; i < contact_details.length; i++) {
-        let card_str = makeCards(contact_details[i]);
+        let card_str = makeLevel(contact_details[i]);
         let card_html = new DOMParser().parseFromString(card_str, "text/html");
-        let card_body = card_html.querySelector('body .card-parent');
-        // // let htm_str = '<div class="col x12 s12 m6 l4 xl3 card-parent"> <div class="card-panel hoverable contact-card"><div class="card-image"><img src="img/office.jpg" alt="icon"></div><div class="card-content"><div class="contact-name"><span class="truncate">Rabindranath Tagore</span></div><div class="infograph"><div class="info_g"><i class="material-icons prefix icon">phone</i><span class="phone-count">2  </span></div><div class="info_g"><i class="material-icons prefix icon">mail_outline</i><span class="mail-count">1</span></div></div><div class="contact-details"><div class="contact-content"><div class="info"><i class="material-icons prefix icon">phone</i><span class="phone contact">+919737177329</span></div></div><div class="contact-content"><div class="info"><i class="material-icons prefix icon">mail_outline</i><span class="mail contact">mastermindjim@gmail.com</span></div></div></div></div></div></div>';
+        let card_body = card_html.querySelector('body .alphabet-level');
+        // console.log(card_body);
         element.appendChild(card_body);
     }
 
@@ -87,12 +246,14 @@ function fetchContactDetails() {
     addCardEventListeners();
 }
 
+
 /**
  * Returns a complete card html string.
  * 
  * @param  {Object} contact
  */
 function makeCards(contact) {
+    // consoler(contact);
     let card_panel = function () {
         let icon = '<div class="card-image"><img src="' + contact.icon + '" alt="icon"></div>';
         let card_content = function () {
@@ -127,6 +288,7 @@ function makeCards(contact) {
         }
         return '<div class="card-panel hoverable contact-card">' + icon + card_content() + '</div>';
     }
+
     return '<div class="col x12 s12 m6 l4 xl3 card-parent">' + card_panel() + '</div>';
 }
 
@@ -184,8 +346,9 @@ function closeClickEvent() {
         close.addEventListener('click', function (e) {
             e.stopPropagation();
             const parent_card = e.target.closest('.card-parent');
-
+            
             cardViewToggler(parent_card);
+            removeOverlay(parent_card);
         });
     });
 }
@@ -435,35 +598,79 @@ function menuItemsEventListeners() {
     menu_items.forEach(item => {
         item.addEventListener('click', function(e) {
             e.stopPropagation(); // disbales on card click event.
+            // Get the current card
             const parent = this.closest('.card-parent');
+            // Capture present width
+            const current_width = window.getComputedStyle(parent).width;
+            // Get client-rect properties.
             const parent_rect = parent.getBoundingClientRect();
-            const offsetX = parent_rect.left - window.innerWidth / 2 + parent_rect.width / 2;
-            const offsetY = parent_rect.top - window.innerHeight / 2 + parent_rect.height / 2
+            // Create a mid-point offsets.
+            // (Used to place the card at the center of the screen).
+            const offsetX = window.innerWidth / 2  - parent_rect.width / 2;
+            const offsetY = window.innerHeight / 2 - parent_rect.height / 2;
+            // Create a new stylesheet to add a fullscreen style to the card.
             const style = document.createElement('style');
             style.type = 'text/css';
-            styleText = '.fullscreen {position: absolute;transition: all 0.5s ease 0s;transform: translate3d(' + -offsetX + 'px, ' + -offsetY + 'px, 0);left: 0px !important;z-index: 100;display: flex;justify-content: center;width:'+ window.innerWidth +'px}';            
+            styleText = '.fullscreen {position: fixed;transition: all 0.5s ease 0s;top: ' + offsetY + 'px;z-index: 100;display: flex;justify-content: center;';
             style.innerHTML = styleText;
+            // Add stylesheet to head.
             document.getElementsByTagName('head')[0].appendChild(style);
+            // Add to card.
             parent.classList.add('fullscreen');
 
-            const overlay = $('<div class="overlay">');
-            $('body').append(overlay);
-            overlay.css({
-                position: 'absolute',
-                height: '-webkit-fill-available',
-                width: '-webkit-fill-available',
-                left: 0,
-                top: 0,
-                backgroundColor: '#d3d3d3c2',
-                position: 'fixed',
-            });
-            overlay.click(function () {
-                parent.classList.remove('fullscreen');
-                this.remove();
-            });
+            // if window is below 600, make card appear at full width.
+            if (window.innerWidth < 600) {
+                parent.style.left = 0 ;
+                consoler('asd');
+            } 
+            else {
+                parent.style.left = offsetX + 'px !important' ;
+                consoler('here');
+            }
+            parent.children[0].style.width = current_width;
+
+            
+            // Close FAB menu
+            $('.fixed-action-btn').floatingActionButton('close');
+            addOverlay(parent);
+            
         });
     });
 }
+
+/**
+ * Adds a overlay under card.
+ * 
+ * @param {HTMLElement} parent 
+ */
+
+function addOverlay(parent) {
+    const overlay = $('<div class="overlay">'); 
+    $('body').append(overlay);
+    overlay.css({
+        position: 'absolute',
+        height: '100%',
+        width: '100%',
+        left: 0,
+        top: 0,
+        backgroundColor: '#d3d3d3c2',
+        position: 'fixed',
+        overflow: 'hidden',
+    });
+    overlay.click(function () {
+        removeOverlay(parent);
+    });
+}
+
+function removeOverlay(parent) {
+    const overlay = document.querySelector('.overlay');
+    if (overlay) {
+        overlay.parentElement.removeChild(overlay);
+        parent.classList.remove('fullscreen');
+        parent.children[0].style.width = 'initial';
+    }
+}
+
 /**
  * Adds click events to contacts
  */
