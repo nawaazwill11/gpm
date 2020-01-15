@@ -10,7 +10,7 @@ class DataController extends Controller
         $contacts = 
         array(
           array (
-            'icon' => 'img/office.jpg',
+            'icon' => '',
             'name' => 'XRabindranath Tagore',
             'contact' => 
             array (
@@ -26,7 +26,7 @@ class DataController extends Controller
             ),
           ),
           array (
-            'icon' => 'img/office.jpg',
+            'icon' => '',
             'name' => 'DRabindranath Tagore',
             'contact' => 
             array (
@@ -42,7 +42,7 @@ class DataController extends Controller
             ),
           ),
           array (
-            'icon' => 'img/office.jpg',
+            'icon' => '',
             'name' => 'PRabindranath Tagore',
             'contact' => 
             array (
@@ -58,7 +58,7 @@ class DataController extends Controller
             ),
           ),
           array (
-            'icon' => 'img/office.jpg',
+            'icon' => '',
             'name' => 'TRabindranath Tagore',
             'contact' => 
             array (
@@ -74,7 +74,7 @@ class DataController extends Controller
             ),
           ),
           array (
-            'icon' => 'img/office.jpg',
+            'icon' => '',
             'name' => 'AARabindranath Tagore',
             'contact' => 
             array (
@@ -90,7 +90,7 @@ class DataController extends Controller
             ),
           ),
           array (
-            'icon' => 'img/office.jpg',
+            'icon' => '',
             'name' => 'ARabindranath Tagore',
             'contact' => 
             array (

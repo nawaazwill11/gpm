@@ -26,7 +26,8 @@
 <div class="contact-container">
     <div class="alphabet-level">
         <div class="alphabet">
-            <span>A</span>
+            <span class="alpha-name">A</span>
+            <span class="contact-count">(1)</span>
         </div>
         <div class="divider"></div>
         <div class="card-container">
@@ -34,7 +35,9 @@
                 <div class="col x12 s12 m6 l4 xl3 card-parent"> 
                     <div class="card-panel hoverable contact-card">
                         <div class="card-image">
-                            <img src="{{ asset('img/office.jpg') }}" alt="icon">
+                            <div class="icon-container">
+                                <img src="{{ asset('img/office.jpg') }}" alt="icon">
+                            </div>
                         </div>
                         <div class="card-content">
                             <div class="contact-name">
@@ -86,10 +89,29 @@
                                   <i class="material-icons">menu</i>
                                 </a>
                                 <ul>
-                                    <li class="tooltipped menu-item" data-position="bottom" data-tooltip="Edit"><a class="btn-floating"><i class="material-icons">edit</i></a></li>
-                                    <li class="tooltipped menu-item" data-position="bottom" data-tooltip="Delete"><a class="btn-floating"><i class="material-icons">delete</i></a></li>
-                                    <li class="tooltipped menu-item" data-position="bottom" data-tooltip="Download"><a class="btn-floating"><i class="material-icons">file_download</i></a></li>
-                                    <li class="tooltipped menu-item" data-position="bottom" data-tooltip="More"><a class="btn-floating"><i class="material-icons">info</i></a></li>
+                                    <li class="tooltipped menu-item item_edit" data-position="bottom" data-tooltip="Edit" data-itemname="item_edit">
+                                        <a class="btn-floating">
+                                            <i class="material-icons">edit</i>
+                                        </a>
+                                    </li>
+                                    <li class="tooltipped menu-item item_delete" data-position="bottom" data-tooltip="Delete"
+                                    data-itemname="item_delete">
+                                        <a class="btn-floating">
+                                            <i class="material-icons">delete</i>
+                                        </a>
+                                    </li>
+                                    <li class="tooltipped menu-item item_download" data-position="bottom" data-tooltip="Download"
+                                    data-itemname="item_download">
+                                        <a class="btn-floating">
+                                            <i class="material-icons">file_download</i>
+                                        </a>
+                                    </li>
+                                    <li class="tooltipped menu-item item_info" data-position="bottom" data-tooltip="More"
+                                    data-itemname="item_info">
+                                        <a class="btn-floating">
+                                            <i class="material-icons">info</i>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -99,7 +121,124 @@
         </div>
     </div>
 </div>
-
+{{-- <div class="container _e_container">
+    <div class="card-panel hoverable">
+        <div class="row">
+            <div class=" col xs12 s10 m8 l6 xl4">
+                <form>
+                    <div class="row">
+                        <div class="col xs12 _e_image-container">
+                            <img src="/img/office.jpg">
+                        </div>
+                        <div class="image-controls">
+                            <div>
+                                <button>Change</button>
+                                <button>Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="_" type="email" class="validate">
+                            <label for="email" class="">Email</label>
+                            <span class="helper-text" data-error="wrong" data-success="right">Helper text</span>
+                        </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> --}}
+<div class="container _e_container">
+    <div class="z-depth-3 _e_panel">
+        <div class="_e_content">
+            <div class="fixed-content">
+                <div class="_e_layer">
+                    <div class="_e_image-container">
+                        <div class="_e_image">
+                            <img src="/img/office.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="_e_image-controls">
+                        <a class="waves-effect waves-light btn change">Change</a>
+                        <a class="waves-effect waves-light btn remove">Remove</a>
+                    </div>
+                </div>
+            </div>
+            <div class="variable-content">
+                <div class="variables">
+                    <div class="_e_layer name">
+                        <div class="row">
+                            <div class="name-box">
+                                <div class="firstname col s12 l6">
+                                    <div class="input-field">
+                                        <input id="firstname" type="text" value="Rabindranath">
+                                        <label for="firstname">First Name</label>
+                                        <span class="helper-text" data-error="Invalid" data-success="right"></span>
+                                    </div>
+                                </div>
+                                <div class="lastname  col s12 l6">
+                                    <div class="input-field">
+                                        <input id="lastname" type="text" value="Tagore">
+                                        <label for="email">Last Name</label>
+                                        <span class="helper-text" data-error="Invalid" data-success="right"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="_e_layer phone">
+                        <div class="row">
+                            <div class="field-box">
+                                <div class="side-icon">
+                                    <i class="material-icons right waves-effect">remove_circle</i>
+                                </div>
+                                <div class="input-field">
+                                    <input id="phone-1" type="text" value="+919737177329">
+                                    <label for="phone-1">Phone number</label>
+                                </div>
+                            </div>
+                            <div class="field-box">
+                                <div class="side-icon">
+                                    <i class="material-icons right waves-effect">remove_circle</i>
+                                </div>
+                                <div class="input-field">
+                                    <input id="phone-2" type="text" value="+919558484794">
+                                    <label for="email">Phone number</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bottom-icon">
+                            <i class="material-icons small waves-effect">add_circle</i>
+                        </div>
+                    </div>
+                    <div class="_e_layer phone">
+                        <div class="row">
+                            <div class="field-box">
+                                <div class="side-icon">
+                                    <i class="material-icons right waves-effect">remove_circle</i>
+                                </div>
+                                <div class="input-field">
+                                    <input id="email" type="email" class="validate" value="mastermindjim@gmai.com">
+                                    <label for="email">Email</label>
+                                    <span class="helper-text" data-error="Invalid" data-success="right"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bottom-icon">
+                            <i class="material-icons small waves-effect">add_circle</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="_e_controls">
+            <a class="waves-effect waves-teal btn undo">Undo <i class="material-icons right">undo</i></a>
+            <a class="waves-effect waves-teal btn send">Send <i class="material-icons right">send</i></a>
+        </div>
+    </div>
+    
+</div>
 @endsection
 
 @section('js-assets')
