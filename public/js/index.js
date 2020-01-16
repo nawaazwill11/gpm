@@ -93,8 +93,19 @@ function generateLevels(contacts) {
     
     addColor(letter_paired_contacts);
 
+    // Add to localstorage for future uses.
+    storeLocally(letter_paired_contacts);
+
     loadLevels(letter_paired_contacts);
 }
+
+
+function storeLocally(contacts) {
+
+    const contacts_strgy = JSON.stringify(contacts);
+    window.localStorage.setItem('contacts', contacts_strgy);
+}
+
 
 /**
  * Capitalizes the first letter of all contact names and
@@ -270,7 +281,6 @@ function loadLevels(contact_details) {
         let card_str = makeLevel(contact_details[i]);
         let card_html = new DOMParser().parseFromString(card_str, "text/html");
         let card_body = card_html.querySelector('body .alphabet-level');
-        // console.log(card_body);
         element.appendChild(card_body);
     }
 
@@ -321,7 +331,6 @@ function makeLevel(contact) {
  */
 function makeCards(contact, icon_extras) {
 
-    // consoler(contact);
     let card_panel = function () {
         let icon = function () {
            let content;
@@ -757,7 +766,45 @@ function menuItemsEventListeners() {
  */
 
 function editClickListener() {
-    //
+    const edits = document.querySelectorAll('.item_edit');
+    edits.forEach(edit => {
+        edit.addEventListener('click', function (e) {
+            e.stopPropagation();
+            const parent_card = this.closest('.card-parent');
+            
+            cardViewToggler(parent_card);
+
+            const alphabet_level = this.closest('.alphabet-level');
+            const alphabet = alphabet_level.querySelector('.alpha-name').innerText;
+
+            const contacts = JSON.parse(window.localStorage.getItem('contacts'));
+
+            let match;
+            for(let i = 0; i < contacts.length; i++) {
+                if (contacts[i].letter === alphabet) {
+                    match = contacts[i];
+                    break;
+                }
+            }
+
+            const contact_name = alphabet_level.querySelector('.contact-name span').innerText;
+            
+            let clicked_contact
+
+            for(let i = 0; i < match.contacts.length; i++) {
+                if (match.contacts[i].name == contact_name) {
+                    clicked_contact = match.contacts[i];
+                    break;
+                }
+            }
+
+            clicked_contact['letter'] = match.letter;
+            clicked_contact['color'] = match.color;
+    
+            
+            loadEditPanel(clicked_contact);
+        });
+    });
 }
 
 /**
@@ -990,73 +1037,222 @@ function contactToClipboard(value) {
  * 
  */
 
-const eclose = document.querySelector('.eclose');
-eclose.addEventListener('click', function () {
-    closeEContainer();
-});
+function loadEditPanel(contact) {
+    const element = document.querySelector('body');
+    let panel = makeEditPanel(contact);
+    let panel_html = new DOMParser().parseFromString(panel, "text/html");
+    let panel_body = panel_html.querySelector('body .econtainer');
+    element.appendChild(panel_body);
 
-function closeEContainer() {
-    const econtainer = document.querySelector('.econtainer');
-    econtainer.parentNode.removeChild(econtainer);
+    addCloseEditPanelListeners();
+    
+    fieldAdderListeners();
+
+    deleleEContentListeners();
+
+    M.updateTextFields();
+
+    saveClickListener();
 }
 
-const delete_icons = document.querySelectorAll('.delete-icon');
-delete_icons.forEach(icon => {
-    icon.addEventListener('click', function () {
+function makeEditPanel(contact) {
+    const econtainer = function () {
+        const _form = function () {
+            const efixed = function () {
+                const eimage_container = function () {
+                    const content = contact.icon ? '<img src="img/' + contact.icon + '"' : 
+                    '<span>' + contact.letter + '</span>';
+                    
+                    return '<div class="eimage-container"><div class="eimage" style="background-color: ' + contact.color + '">' + content + '</div></div>';
+                }
 
-        // Removes the corresponding layer.
-        function removeLayer(layer) {
-            const input_field = layer.querySelector('.input-field');
-            if (! input_field.classList.contains('noop')) {
-                layer.parentNode.removeChild(layer);
-            } else {
+                return ' <div class="efixed-content"><div class="econtent-layer">' + eimage_container() + '<div class="eimage-controls"><a class="waves-effect waves-light btn econtrols change">Change</a><a class="waves-effect waves-light btn econtrols remove">Remove</a></div></div></div>';
+            };
+
+            const evarible = function () {
+                const name_segment = function () {
+                    const name = contact.name.split(' ');
+                    const firstname = name[0] || '';
+                    const lastname = name[1] || '';
+
+                    return '<div class="segment noadd" data-type="name"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect">person_outline</i>Name</span></div><div class="divider"></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="firstname" type="text" value="' + firstname + '"><label for="firstname">First Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="lastname" type="text" value="' + lastname + '"><label for="lastname">Last Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div></div>';
+                };
+                const phone_segment = function () {
+                    function phoneLayer(series=1, number=null) {
+                        
+                        return '<div class="econtent-layer" data-series=' + series + '><div class="fieldbox"><div class="input-field"><input id="phone_' + series + '" type="text" value="' + number + '"><label for="phone_' + series + '">Phone number</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+                    }
+
+                    let layers = '';
+                    if (contact.contact.phone.length) {
+                        let phones = contact.contact.phone;
+                        for(let i = 0; i < phones.length; i++) {
+                            layers += phoneLayer(i+1, phones[i]);
+                        }
+                    } else {
+                        layers = phoneLayer();
+                    }
+
+                    return '<div class="segment" data-type="phone"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect ">phone</i>Phone</span></div><div class="divider"></div><div class="bottom-icon"><div class="adder"><i class="material-icons small waves-effect">add_circle</i></div></div>' + layers + '</div>';
+                }
+                const mail_segment = function () {
+                    function mailLayer(series=1, address=null) {
+                        return '<div class="econtent-layer"><div class="fieldbox"><div class="input-field low-marg"><input id="email_' + series + '" type="email" class="validate" value="' + address + '"><label for="email_' + series + '">Email Address</label><span class="helper-text" data-error="Invalid" data-success="right"></span></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+                    }
+
+                    let layers = '';
+                    if (contact.contact.email.length) {
+                        const mails = contact.contact.email;
+                        for(let i = 0; i < mails.length; i++) {
+                            layers += mailLayer(i+1, mails[0]);
+                        }
+                    } else {
+                        layers = mailLayer();
+                    }
+
+                    return '<div class="segment" data-type="mail"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect ">mail_outline</i>Mail</span></div><div class="divider"></div><div class="bottom-icon"><div class="adder"><i class="material-icons small waves-effect">add_circle</i></div></div>' + layers + '</div>'
+                }
+
+                return '<div class="evariable-content">' + name_segment() + phone_segment() + mail_segment() + '</div>';
+
+            };
+
+            return ' <form id="eform" class="eform">' + efixed() + '<div class="progress"><div class="indeterminate"></div></div>' + evarible() + ' <div class="eform-control"><div class="fc-icon undo"><a class="btn-floating waves-effect red tooltipped" data-tooltip="Undo changes" data-position="left"><i class="material-icons">undo</i></a></div><div class="fc-icon save"><a class="btn-floating waves-effect red tooltipped" data-tooltip="Save changes" data-position="right"><i class="material-icons">save</i></a></div></div></form>';
+        };
+
+        return '<div class="container econtainer"><div class="epanel z-depth-2"><div class="econtent">' + _form() + '</div><div class="eclose"><i class="material-icons red">close</i></div></div></div>';
+    };
+
+    return econtainer();
+}
+
+
+function addCloseEditPanelListeners() {
+    
+    function closeEContainer() {
+        const econtainer = document.querySelector('.econtainer');
+        econtainer.parentNode.removeChild(econtainer);
+    }
+ 
+    const eclose = document.querySelector('.eclose');
+    eclose.addEventListener('click', function () {
+        closeEContainer();
+    });
+}
+
+function deleleEContentListeners() {
+
+    const delete_icons = document.querySelectorAll('.delete-icon');
+
+    delete_icons.forEach(icon => {
+        icon.addEventListener('click', function () {
+
+            // Removes the corresponding layer.
+            function removeLayer(layer) {
+                const input_field = layer.querySelector('.input-field');
+                if (! input_field.classList.contains('noop')) {
+                    layer.parentNode.removeChild(layer);
+                } else {
+                    emptyInput(layer);
+                }
+            }
+
+            // Empties corresponding input's value.
+            function emptyInput(layer) {
+                let input_field = layer.querySelector('.input-field')
+                let input = input_field.querySelector('input')
+                input.value = '';
+                input.focus();
+                input.blur();
+            }
+
+            const segment = this.closest('.segment'); // Parent segment
+            const layer = this.closest('.econtent-layer'); // Current layer
+            const layers = segment.querySelectorAll('.econtent-layer'); // Layers in a segment
+            
+            // Remove current layer if its not the last layer
+            // else empty the input box's value.
+            if (layers.length > 1) {
+                removeLayer(layer);
+            } else{
                 emptyInput(layer);
             }
-        }
+        });
+    });
+}
 
-        // Empties corresponding input's value.
-        function emptyInput(layer) {
-            let input_field = layer.querySelector('.input-field')
-            let input = input_field.querySelector('input')
-            input.value = '';
-            input.focus();
-            input.blur();
-        }
 
-        const segment = this.closest('.segment'); // Parent segment
-        const layer = this.closest('.econtent-layer'); // Current layer
-        const layers = segment.querySelectorAll('.econtent-layer'); // Layers in a segment
+function fieldAdderListeners() {
+    const adders = document.querySelectorAll('.adder');
+    adders.forEach(adder => {
+        adder.addEventListener('click', function () {
+
+            const segment = this.closest('.segment');
         
-        // Remove current layer if its not the last layer
-        // else empty the input box's value.
-        if (layers.length > 1) {
-            removeLayer(layer);
-        } else{
-            emptyInput(layer);
-        }
-    });
+            segment.appendChild(makeLayer(segment));
+
+            deleleEContentListeners();
+        });
 });
 
-const adders = document.querySelectorAll('.adder');
-adders.forEach(adder => {
-    adder.addEventListener('click', function () {
+}
 
-        function getLayerCount(segment) {
+// Add during edit panel creation.
+// editPanelListeners();
 
-            const layers = segment.querySelectorAll('.econtent-layer');
-            let count = 1;
-            layers.forEach(layer => {
-                const number = Number(layer.dataset.layer);
-                if (count > number) {
-                    count = number;
-                }
-            });
-            return ++count;
+function makeLayer(segment) {
 
-        }
-        const segment = this.closest('.segment');
-        const layer_number = getLayerCount(segment);
-        console.log(layer_number);
-        const layer_str = ' <div class="econtent-layer"><div class="fieldbox"><div class="input-field"><input id="phone-2" type="text" value="+919558484794" data-layer="2"><label for="email">Phone number</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+    function getLayerCount(segment) {
+
+        const layers = segment.querySelectorAll('.econtent-layer');
+        let count = 1;
+        layers.forEach(layer => {
+            const number = Number(layer.dataset.series);
+            if (count < number) {
+                count = number;
+            }
+        });
+
+        return ++count;
+    }
+
+    // Returns a econtent layer dom object based on
+    // type of segment.
+    function getDOMObject(segment) {
+
+        const series = getLayerCount(segment);
+        const type = segment.dataset.type;
+        let eclass='', placeholder = 'Phone Number', itype = 'text', iclass = '', helper = '';
+        
+        if (type === 'mail') {
+            eclass = 'low-marg';
+            iclass = 'validate';
+            itype = 'email';
+            placeholder = 'Email Address';
+            helper ='<span class="helper-text" data-error="Invalid" data-success="Valid"></span>';
+        } 
+
+        const layer_str = '<div class="econtent-layer" data-series="' + series + '"><div class="fieldbox"><div class="input-field ' + eclass + '"><input id="'+ type + '-' + series + '" class="' + iclass + '" type="' + itype  + '" value=""><label for="'+ type + '-' + series + '">' + placeholder + '</label>' + helper + '</div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+
+        
+        const layer_html = new DOMParser().parseFromString(layer_str, "text/html");
+        return layer_html.querySelector('body .econtent-layer');
+
+    }
+
+    return getDOMObject(segment);
+}
+
+
+function saveClickListener() {
+    const save = document.querySelector('.eform-control .save');
+    save.addEventListener('click', function () {
+        const eform = this.closest('.eform');
+        const progress = eform.querySelector('.progress');
+        progress.style.display = 'block';
+        setTimeout(() => {
+            M.toast({html: 'Contact updated!', classes: 'rounded', displayLength: 2000});
+            progress.style.display = 'none';
+        }, 3000);
     });
-});
+}

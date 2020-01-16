@@ -156,15 +156,17 @@
 }
 
 .econtainer {
+    /* display: none; */
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
     background-color: #d3d3d3b5;
-    display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1050;
 }
 .epanel {
     position: relative;
@@ -250,7 +252,7 @@
     margin-bottom: 10px !important;
 }
 .segment .divider {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
     width: 90%;
 }
 .seg-title .title {
@@ -268,6 +270,9 @@
 .input-field {
     flex: 16;
 }
+.low-marg {
+    margin-bottom: 0rem;
+}
 .side-icon {
     flex: 2;
     position: relative;
@@ -280,6 +285,7 @@
     position: absolute;
     width: 100%;
     bottom: -40px;
+    right: 10px;
     color: teal;
 }
 .bottom-icon i {
@@ -351,3 +357,4 @@
         line-height: 56px;
     }
 }
+

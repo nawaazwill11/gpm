@@ -41,7 +41,7 @@
                         </div>
                         <div class="card-content">
                             <div class="contact-name">
-                                <span class="truncate">Rabindranath Tagore</span>
+                                <span class="truncate">ARabindranath Tagore</span>
                             </div>
                             <div class="infograph">
                                 <div class="info_g">
@@ -245,7 +245,7 @@
     <div></div>
 </div> --}}
 
-
+{{-- 
 <div class="container econtainer">
     <div class="epanel z-depth-2">
         <div class="econtent">
@@ -267,7 +267,7 @@
                     <div class="indeterminate"></div>
                 </div>
                 <div class="evariable-content">
-                    <div class="segment noadd">
+                    <div class="segment noadd" data-type="name">
                         <div class="seg-title">
                             <span class="title">
                                 <i class="material-icons small waves-effect">person_outline</i>
@@ -298,7 +298,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="segment">
+                    <div class="segment" data-type="phone">
                         <div class="seg-title">
                             <span class="title">
                                 <i class="material-icons small waves-effect ">phone</i>
@@ -311,10 +311,10 @@
                                 <i class="material-icons small waves-effect">add_circle</i>
                             </div>
                         </div>
-                        <div class="econtent-layer">
+                        <div class="econtent-layer"  data-series='1'>
                             <div class="fieldbox">
                                 <div class="input-field">
-                                    <input id="phone_1" type="text" value="+919737177329" data-layer='1'>
+                                    <input id="phone_1" type="text" value="+919737177329">
                                     <label for="phone_1">Phone number</label>
                                 </div>
                                 <div class="side-icon delete-icon">
@@ -322,7 +322,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="econtent-layer">
+                        <div class="econtent-layer"  data-series='2'>
                             <div class="fieldbox">
                                 <div class="input-field">
                                     <input id="phone-2" type="text" value="+919558484794" data-layer="2">
@@ -334,7 +334,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="segment">
+                    <div class="segment" data-type="mail">
                         <div class="seg-title">
                             <span class="title">
                                 <i class="material-icons small waves-effect ">mail_outline</i>
@@ -349,9 +349,9 @@
                         </div>
                         <div class="econtent-layer">
                             <div class="fieldbox">
-                                <div class="input-field">
+                                <div class="input-field low-marg">
                                     <input id="email_1" type="email" class="validate" value="mastermindjim@gmai.com">
-                                    <label for="email_1">Email</label>
+                                    <label for="email_1">Email Address</label>
                                     <span class="helper-text" data-error="Invalid" data-success="right"></span>
                                 </div>
                                 <div class="side-icon delete-icon">
@@ -362,10 +362,10 @@
                     </div>
                 </div>
                 <div class="eform-control">
-                    <div class="fc-icon">
+                    <div class="fc-icon undo">
                         <a class="btn-floating waves-effect red tooltipped" data-tooltip="Undo changes" data-position="left"><i class="material-icons">undo</i></a>
                     </div>
-                    <div class="fc-icon">
+                    <div class="fc-icon save">
                         <a class="btn-floating waves-effect red tooltipped" data-tooltip="Save changes" data-position="right"><i class="material-icons">save</i></a>
                     </div>
                 </div>
@@ -375,7 +375,7 @@
             <i class="material-icons red">close</i>
         </div>
     </div>
-</div>
+</div> --}}
 
 
 @endsection
