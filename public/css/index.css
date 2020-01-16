@@ -155,121 +155,190 @@
     display: flex;
 }
 
-/* Edit */
-._e_container {
+.econtainer {
     position: fixed;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
     top: 0;
     left: 0;
-    z-index: 101;
-}
-._e_panel {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    height: 75%;
-    /* padding: 20px; */
-    background-color: white;
-}
-._e_content {
     height: 100%;
-    /* height: -webkit-fill-available; */
-}
-.fixed-content {
-    padding: 20px;
-    box-sizing: border-box;
-    border-bottom: 1px solid lightgray;
-}
-.variable-content {
-    padding: 20px 5px;
-    height: 70%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-.variables {
     width: 100%;
-}
-._e_layer {
-    position: relative;
-    width: 100%;
-}
-._e_image-container {
+    background-color: #d3d3d3b5;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-._e_image {
-    width: 100px;
-    border-radius: 100%;
+.epanel {
+    position: relative;
+    width: 600px;
+    height: 100%;
+    background-color: white;
+    padding: 10px;
 }
-._e_image-container img {
+.econtent {
+    height: 100%;
+    width: -webkit-fill-available;
+}
+.eform {
+    position: relative;
+    height: 100%;
+}
+.efixed-content {
+    height: fit-content;
+    border-bottom: 0.3px solid lightgray;
+}
+.efixed-content, .evariable-content {
+    padding: 10px;
+}
+.econtent-layer {
+    height: fit-content;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+.eimage-container {
     width: 100%;
-    border-radius: 100%;
-}
-._e_image-controls {
+    height: 100%;
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    align-items: center;
+    padding: 10px;
 }
-._e_image-controls a {
-    margin: 0px 5px;
+.eimage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+    background-color: blueviolet;
+    color: white;
+    font-size: xx-large;
+}
+.eimage-controls {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 7px;
+}
+.econtrols {
+    margin: 0 10px;
 }
 .change {
     color: #ff1744;
     background-color: white;
 }
 .change:hover {
-    background-color: #f2f0f0;
+    background-color: rgb(223, 215, 215);
     color: black;
 }
-.remove {
-    color: white;
-    background-color: #ff1744;
-}
 .remove:hover {
-    background-color: #e6002d;
+    background-color: #db143c;
 }
-.field-box {
+.progress {
+    display: none;
+    margin: 0px;
+}
+.evariable-content {
+    margin-top: 10px;
+    height: 65%;
+    overflow-y: scroll;
+}
+.segment {
+    margin-bottom: 10px;
+    padding: 10px;
+}
+.segment .divider {
+    margin-bottom: 16px;
+    width: 90%;
+}
+.seg-title .title {
     display: flex;
     align-items: center;
 }
-._e_layer .input-field {
-    margin: 20px;
-    flex: 1;
+.seg-title .title i {
+    font-size: 20px;
+    margin-right: 5px;
+}
+.fieldbox {
+    display: flex;
+    align-items: baseline;
+}
+.input-field {
+    flex: 16;
 }
 .side-icon {
+    flex: 2;
     position: relative;
-    top: -10px;
-    color: #e20909;
-    cursor: pointer;
+    left: 10px;
 }
-._e_controls {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 30px;
-}
-.undo {
-    background-color: white;
+.delete-icon {
     color: #ff1744;
-}
-.undo:hover {
-    color: white;
-    background-color: #ff1744;
-}
-.send {
-    background-color: teal;
 }
 .bottom-icon {
     position: relative;
     color: teal;
-    left: 12px;
-    top: -30px;
 }
-.button-icon i {
-    font-size: unset;
+.bottom-icon i {
+    font-size: 2rem;
+}
+.side-icon, .bottom-icon {
+    display: flex;
+    justify-content: flex-end;
+}
+.eform-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: absolute;
+    height: 100px;
+    bottom: 0;
+    width: 100%;
+}
+.fc-icon {
+    margin: 0 10px;
+}
+.eclose {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+.eclose i {
     font-size: xx-large;
+    color: white;
+    border-radius: 100%;
+}
+
+
+/* eform media queries */
+
+@media screen and (min-height: 876px) {
+
+    .bottom-icon {
+        justify-content: center;
+    }
+    
+}
+@media screen and (min-width: 600px) {
+    
+    .epanel {
+        height: 80%;
+    }
+    .side-icon i {
+        font-size: 2rem;
+    }
+    .bottom-icon i {
+        font-size: 3rem;
+    }
+    
+    /* .eform-control {
+        justify-content: flex-end;
+        margin-top: 10px;
+    } */
+    .fc-icon a {
+        height: 56px;
+        width: 56px;
+    }
+    .fc-icon i {
+        font-size: 1.6rem;
+        line-height: 56px;
+    }
 }

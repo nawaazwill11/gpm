@@ -983,3 +983,12 @@ function contactToClipboard(value) {
 
     return result;
 }
+
+/**
+ * 
+ * Edit form
+ * 
+ */
+
+const eclose = document.querySelector('.eclose');
+eclose.addEventListener('click')

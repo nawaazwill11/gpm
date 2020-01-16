@@ -3,7 +3,7 @@ body {
 }
 
 nav {
-    width: -webkit-fill-available;
+    width: 100%;
 }
 
 
@@ -36,7 +36,7 @@ nav {
 
 @media screen and (min-width: 1993px) {
     .container, .contact-container {
-        max-width: 1993px !important;
+        max-width: 100%;
     }
     
 }
