@@ -991,4 +991,72 @@ function contactToClipboard(value) {
  */
 
 const eclose = document.querySelector('.eclose');
-eclose.addEventListener('click')
+eclose.addEventListener('click', function () {
+    closeEContainer();
+});
+
+function closeEContainer() {
+    const econtainer = document.querySelector('.econtainer');
+    econtainer.parentNode.removeChild(econtainer);
+}
+
+const delete_icons = document.querySelectorAll('.delete-icon');
+delete_icons.forEach(icon => {
+    icon.addEventListener('click', function () {
+
+        // Removes the corresponding layer.
+        function removeLayer(layer) {
+            const input_field = layer.querySelector('.input-field');
+            if (! input_field.classList.contains('noop')) {
+                layer.parentNode.removeChild(layer);
+            } else {
+                emptyInput(layer);
+            }
+        }
+
+        // Empties corresponding input's value.
+        function emptyInput(layer) {
+            let input_field = layer.querySelector('.input-field')
+            let input = input_field.querySelector('input')
+            input.value = '';
+            input.focus();
+            input.blur();
+        }
+
+        const segment = this.closest('.segment'); // Parent segment
+        const layer = this.closest('.econtent-layer'); // Current layer
+        const layers = segment.querySelectorAll('.econtent-layer'); // Layers in a segment
+        
+        // Remove current layer if its not the last layer
+        // else empty the input box's value.
+        if (layers.length > 1) {
+            removeLayer(layer);
+        } else{
+            emptyInput(layer);
+        }
+    });
+});
+
+const adders = document.querySelectorAll('.adder');
+adders.forEach(adder => {
+    adder.addEventListener('click', function () {
+
+        function getLayerCount(segment) {
+
+            const layers = segment.querySelectorAll('.econtent-layer');
+            let count = 1;
+            layers.forEach(layer => {
+                const number = Number(layer.dataset.layer);
+                if (count > number) {
+                    count = number;
+                }
+            });
+            return ++count;
+
+        }
+        const segment = this.closest('.segment');
+        const layer_number = getLayerCount(segment);
+        console.log(layer_number);
+        const layer_str = ' <div class="econtent-layer"><div class="fieldbox"><div class="input-field"><input id="phone-2" type="text" value="+919558484794" data-layer="2"><label for="email">Phone number</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+    });
+});

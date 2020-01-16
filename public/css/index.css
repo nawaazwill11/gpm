@@ -242,8 +242,12 @@
     overflow-y: scroll;
 }
 .segment {
-    margin-bottom: 10px;
+    position: relative;
+    margin-bottom: 50px;
     padding: 10px;
+}
+.noadd {
+    margin-bottom: 10px !important;
 }
 .segment .divider {
     margin-bottom: 16px;
@@ -273,7 +277,9 @@
     color: #ff1744;
 }
 .bottom-icon {
-    position: relative;
+    position: absolute;
+    width: 100%;
+    bottom: -40px;
     color: teal;
 }
 .bottom-icon i {
@@ -300,6 +306,7 @@
     position: absolute;
     top: 15px;
     right: 15px;
+    cursor: pointer;
 }
 .eclose i {
     font-size: xx-large;
@@ -307,7 +314,9 @@
     border-radius: 100%;
 }
 
-
+.deleted {
+    display: none;
+}
 /* eform media queries */
 
 @media screen and (min-height: 876px) {

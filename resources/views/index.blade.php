@@ -267,7 +267,7 @@
                     <div class="indeterminate"></div>
                 </div>
                 <div class="evariable-content">
-                    <div class="segment">
+                    <div class="segment noadd">
                         <div class="seg-title">
                             <span class="title">
                                 <i class="material-icons small waves-effect">person_outline</i>
@@ -306,10 +306,15 @@
                             </span>
                         </div>
                         <div class="divider"></div>
+                        <div class="bottom-icon">
+                            <div class="adder">
+                                <i class="material-icons small waves-effect">add_circle</i>
+                            </div>
+                        </div>
                         <div class="econtent-layer">
                             <div class="fieldbox">
                                 <div class="input-field">
-                                    <input id="phone_1" type="text" value="+919737177329">
+                                    <input id="phone_1" type="text" value="+919737177329" data-layer='1'>
                                     <label for="phone_1">Phone number</label>
                                 </div>
                                 <div class="side-icon delete-icon">
@@ -320,16 +325,13 @@
                         <div class="econtent-layer">
                             <div class="fieldbox">
                                 <div class="input-field">
-                                    <input id="phone-2" type="text" value="+919558484794">
+                                    <input id="phone-2" type="text" value="+919558484794" data-layer="2">
                                     <label for="email">Phone number</label>
                                 </div>
                                 <div class="side-icon delete-icon">
                                     <i class="material-icons waves-effect">remove_circle</i>
                                 </div>
                             </div>
-                        </div>
-                        <div class="bottom-icon">
-                            <i class="material-icons small waves-effect">add_circle</i>
                         </div>
                     </div>
                     <div class="segment">
@@ -340,6 +342,11 @@
                             </span>
                         </div>
                         <div class="divider"></div>
+                        <div class="bottom-icon">
+                            <div class="adder">
+                                <i class="material-icons small waves-effect">add_circle</i>
+                            </div>
+                        </div>
                         <div class="econtent-layer">
                             <div class="fieldbox">
                                 <div class="input-field">
@@ -351,9 +358,6 @@
                                     <i class="material-icons waves-effect">remove_circle</i>
                                 </div>
                             </div>
-                        </div>
-                        <div class="bottom-icon">
-                            <i class="material-icons small waves-effect">add_circle</i>
                         </div>
                     </div>
                 </div>
