@@ -10,6 +10,10 @@
 
 @section('content')
 
+<div class="loader">
+    <div class="progress"><div class="indeterminate"></div></div>
+</div>
+
 <div class="container">
     <div class="search-panel">
         <div class="row">
@@ -32,7 +36,7 @@
         <div class="divider"></div>
         <div class="card-container">
             <div class="row">
-                <div class="col x12 s12 m6 l4 xl3 card-parent"> 
+                <div id="0" class="col x12 s12 m6 l4 xl3 card-parent"> 
                     <div class="card-panel hoverable contact-card">
                         <div class="card-image">
                             <div class="icon-container">

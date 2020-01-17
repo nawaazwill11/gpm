@@ -1,11 +1,15 @@
 body {
     font-size: larger;
+    overflow-x: hidden;
 }
 
 nav {
     width: 100%;
 }
 
+nav ul li a {
+    font-size: 1.5rem;
+}
 
 @media screen and (max-width: 1410px) {
     .card-parent {
@@ -28,6 +32,20 @@ nav {
         font-size: small;
     }
 }
+
+@media screen and (min-width: 600px) {
+    nav {
+        height: 100px;
+        padding: 20px;
+    }
+    nav ul li a {
+        font-size: 1.5rem;
+    }
+    .nav-wrapper > a {
+        font-size: 2.5rem;
+    }
+}
+
 @media screen and (min-width: 993px) {
     .brand-logo {
         margin-left: 30px;
@@ -47,12 +65,12 @@ nav {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #ffbbbbf3; 
 }
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgb(228, 24, 24); 
+  background: #ff1744; 
 }
 
 /* Handle on hover */

@@ -3,6 +3,7 @@
 #. Sort by alphabet (cards under alphabet-wise row).
 #. Remove info icon in detail view.
 #. Empty icon placeholder.
-. Add Edit View.
+#. Add Edit View.
 . Add interaction (phone number=> call, mail => send) buttons.
 . Add smooth transition.
+. Add account picture and name - sidebar and nav.

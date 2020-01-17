@@ -1,3 +1,17 @@
+.loader {
+    display: none;
+    width: 100%;
+    height: fit-content;
+}
+.loader .progress {
+    margin: 0;
+}
+.loader .progress .indeterminate {
+    background-color: #00BCD4;
+}
+.loader .active {
+    display: block;
+}
 .search {
     margin-top: 20px;
 }
@@ -141,7 +155,7 @@
     flex-direction: column;
     width: -webkit-fill-available;
     align-items: center;
-    height: 89px;
+    height: fit-content;
     margin-top: 10px;
 }
 .contact-content {
@@ -234,7 +248,7 @@
 .remove:hover {
     background-color: #db143c;
 }
-.progress {
+.eform .progress {
     display: none;
     margin: 0px;
 }

@@ -9,19 +9,6 @@ window.onload = async function () {
     // Begin response unpacking and card manufacturing.
     initializeInterface(contacts);
 
-    // Floating button initialization.
-    $(document).ready(function(){
-        $('.fixed-action-btn').floatingActionButton({
-            toolbarEnabled: true
-        });
-    });
-
-    // Tooltip initialization
-    $(document).ready(function(){
-        $('.tooltipped').tooltip();
-      });
-   
-   
 }
 
 /**
@@ -39,7 +26,15 @@ function initializeInterface(contacts) {
 
         // Add event listeners to cards.
         addListeners();
+
     }
+}
+
+
+function initFAB() {
+    $('.fixed-action-btn').floatingActionButton({
+        toolbarEnabled: true
+    });
 }
 
 /**
@@ -99,6 +94,11 @@ function generateLevels(contacts) {
     loadLevels(letter_paired_contacts);
 }
 
+/**
+ * Stores contacts to browser's local storage.
+ * 
+ * @param {Object} contacts 
+ */
 
 function storeLocally(contacts) {
 
@@ -308,7 +308,11 @@ function makeLevel(contact) {
                 let cards = '';
                 
                 for (let i = 0; i < contact.contacts.length; i++) {
-                    let card_str = makeCards(contact.contacts[i], {color:contact.color, letter: contact.letter});
+                    let _contact = contact.contacts[i];
+                    _contact['index'] = i + 1;
+                    _contact['color'] = contact.color;
+                    _contact['letter'] = contact.letter;
+                    let card_str = makeCards(_contact);
                     cards += card_str;
                 }
                 
@@ -329,7 +333,8 @@ function makeLevel(contact) {
  * 
  * @param  {Object} contact
  */
-function makeCards(contact, icon_extras) {
+
+function makeCards(contact) {
 
     let card_panel = function () {
         let icon = function () {
@@ -337,10 +342,10 @@ function makeCards(contact, icon_extras) {
            if (contact.icon) {
                content = '<img src="img/' + contact.icon + '">'
            } else {
-               content = icon_extras.letter;
+               content = contact.letter;
            }
         
-           return '<div class="card-image"><div class="icon-container " style="background-color: ' + icon_extras.color + '">' + content + '</div></div>';
+           return '<div class="card-image"><div class="icon-container " style="background-color: ' + contact.color + '">' + content + '</div></div>';
         }
         
         let card_content = function () {
@@ -358,14 +363,20 @@ function makeCards(contact, icon_extras) {
             }
             let contact_details = function () {
                 function info(icon, list, count) {
+
                     let info = '<div class="contact-content">';
+                    let contact_type = icon.search(/mail/) >= 0 ? 'mail' : 'phone';
+
                     for (let i = 0; i < count; i++) {
-                        info += '<div class="info"><i class="material-icons prefix icon">' + icon + '</i><span class="contact">' + list[i] + '</span></div>';
+                        info += '<div class="info"><i class="material-icons prefix icon">' + icon + '</i><span class="contact ' + contact_type + '-contact">' + list[i] + '</span></div>';
                     }
+
                     return info + '</div>';
                 }
+
                 let phone_info = info('phone', phone_contact, phone_count);
                 let mail_info = info('mail_outline', mail_contact, mail_count);
+
                 return '<div class="contact-details">' + phone_info + mail_info + '</div>';
             }
             let close = '<div class="close red"><i class="material-icons prefix tooltipped-s" data-position="top" data-tooltip="Collapse">clear</i></div>';
@@ -377,7 +388,7 @@ function makeCards(contact, icon_extras) {
         return '<div class="card-panel hoverable contact-card">' + icon() + card_content() + '</div>';
     }
 
-    return '<div class="col x12 s12 m6 l4 xl3 card-parent">' + card_panel() + '</div>';
+    return '<div id="'+ contact.index + '" class="col x12 s12 m6 l4 xl3 card-parent">' + card_panel() + '</div>';
 }
 
 /**
@@ -395,6 +406,21 @@ function addListeners() {
     
     // Loads event listeners on the document
     documentListeners();
+
+    // Floating action button initialization.
+    initFAB();
+
+    // Tootltip initialization.
+    initTooltip();
+
+}
+
+/**
+ * Inititalize tooltip instances.
+ */
+
+function initTooltip() {
+    $('.tooltipped').tooltip();
 }
 
 /**
@@ -438,7 +464,7 @@ function closeClickEvent() {
             const parent_card = e.target.closest('.card-parent');
             
             cardViewToggler(parent_card);
-            restoreCard(parent_card)
+            restoreCard(parent_card);
         });
     });
 }
@@ -800,8 +826,8 @@ function editClickListener() {
 
             clicked_contact['letter'] = match.letter;
             clicked_contact['color'] = match.color;
+            clicked_contact['index'] = parent_card.id;
     
-            
             loadEditPanel(clicked_contact);
         });
     });
@@ -812,7 +838,16 @@ function editClickListener() {
  */
 
 function deleteClickListener() {
-    //
+    const dels = document.querySelectorAll('.item_delete');
+    dels.forEach(del => {
+        del.addEventListener('click', function (e) {
+            e.stopPropagation(); // disbales on card click event.
+            
+            const parent = this.closest('.card-parent');
+            
+            deleletContact(parent);
+        });
+    });
 }
 
 /**
@@ -820,7 +855,15 @@ function deleteClickListener() {
  */
 
 function downloadClickListener() {
-    //
+    const downloads = document.querySelectorAll('.item_download');
+    downloads.forEach(download => {
+        download.addEventListener('click', function () {
+            const parent = this.closest('.card-parent');
+            let contact = getContactInfo(parent);
+
+            downloadCard(contact);
+        });
+    })
 }
 
 /**
@@ -914,18 +957,20 @@ function menuClickEvent(parent, item) {
  * @param {String} item 
  */ 
 
-function fabClosure(element, name) {
+function fabClosure(element, name=null) {
 
     // Triggers fab close method.
     $('.fixed-action-btn').floatingActionButton('close');
 
     // Hides clicked menu item.
-    toggleMenuItem(element, name);
+    if (name) {
+        toggleMenuItem(element, name);
+    }
 
 }
 
 /**
- * Toggles menu item display prop. 
+ * Toggles selected fab menu item visibility. 
  * 
  * @param {HTMLElement} parent 
  * @param {String} item 
@@ -962,6 +1007,7 @@ function addOverlay(parent) {
     });
     overlay.click(function () {
         restoreCard(parent);
+        removeOverlay();
     });
 }
 
@@ -972,13 +1018,11 @@ function addOverlay(parent) {
  */
 
 
-function removeOverlay(parent) {
+function removeOverlay() {
 
     const overlay = document.querySelector('.overlay');
     if (overlay) {
         overlay.parentElement.removeChild(overlay);
-        parent.classList.remove('fullscreen');
-        parent.children[0].style.width = 'initial';
     }
 }
 
@@ -991,10 +1035,13 @@ function removeOverlay(parent) {
 function restoreCard(parent) {
 
     const element = document.querySelector('.selected');
-    console.log('selected', element);
-    toggleMenuItem(parent, element.dataset.itemname);
-    removeClass(parent, 'selected');
-    removeOverlay(parent);
+    if (element) {
+        toggleMenuItem(parent, element.dataset.itemname);
+        removeClass(parent, 'selected');
+        removeOverlay(parent);
+        parent.classList.remove('fullscreen');
+        parent.children[0].style.width = 'initial';
+    }
 }
 
 /**
@@ -1026,9 +1073,19 @@ function contactToClipboard(value) {
     input.select();
     let result = document.execCommand('copy');
     document.body.removeChild(input);
-    M.toast({html: 'Copied to clipboard!', classes: 'rounded'});
+    toaster('Copied to clipboard!');
 
     return result;
+}
+
+/**
+ * Toasts messages on screen.
+ * 
+ * @param {String} msg 
+ */
+
+function toaster(msg) {
+    M.toast({html: msg});
 }
 
 /**
@@ -1037,23 +1094,43 @@ function contactToClipboard(value) {
  * 
  */
 
+ /**
+  * Create edit panel and adds listeners
+  * to various components
+  * 
+  * @param {Object} contact 
+  */
+
 function loadEditPanel(contact) {
+
     const element = document.querySelector('body');
     let panel = makeEditPanel(contact);
     let panel_html = new DOMParser().parseFromString(panel, "text/html");
     let panel_body = panel_html.querySelector('body .econtainer');
     element.appendChild(panel_body);
 
-    addCloseEditPanelListeners();
+    // Close button click event.
+    closeEditPanelListeners();
     
+    // Add-field-button click event.
     fieldAdderListeners();
 
+    // Remove field click event.
     deleleEContentListeners();
 
-    M.updateTextFields();
-
+    // Save button click event.
     saveClickListener();
+
+    // Updates inputs fields to avoid overlaps
+    M.updateTextFields();
 }
+
+/**
+ * Generates the edit panel DOM string 
+ * based on a selected contact
+ * 
+ * @param {Object} contact 
+ */
 
 function makeEditPanel(contact) {
     const econtainer = function () {
@@ -1075,12 +1152,12 @@ function makeEditPanel(contact) {
                     const firstname = name[0] || '';
                     const lastname = name[1] || '';
 
-                    return '<div class="segment noadd" data-type="name"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect">person_outline</i>Name</span></div><div class="divider"></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="firstname" type="text" value="' + firstname + '"><label for="firstname">First Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="lastname" type="text" value="' + lastname + '"><label for="lastname">Last Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div></div>';
+                    return '<div class="segment noadd" data-type="name"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect">person_outline</i>Name</span></div><div class="divider"></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="firstname" class="ei-name" type="text" value="' + firstname + '"><label for="firstname">First Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="lastname" class="ei-name" type="text" value="' + lastname + '"><label for="lastname">Last Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div></div>';
                 };
                 const phone_segment = function () {
                     function phoneLayer(series=1, number=null) {
                         
-                        return '<div class="econtent-layer" data-series=' + series + '><div class="fieldbox"><div class="input-field"><input id="phone_' + series + '" type="text" value="' + number + '"><label for="phone_' + series + '">Phone number</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+                        return '<div class="econtent-layer" data-series=' + series + '><div class="fieldbox"><div class="input-field"><input id="phone_' + series + '" class="ei-phone" type="text" value="' + number + '"><label for="phone_' + series + '">Phone number</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
                     }
 
                     let layers = '';
@@ -1097,7 +1174,7 @@ function makeEditPanel(contact) {
                 }
                 const mail_segment = function () {
                     function mailLayer(series=1, address=null) {
-                        return '<div class="econtent-layer"><div class="fieldbox"><div class="input-field low-marg"><input id="email_' + series + '" type="email" class="validate" value="' + address + '"><label for="email_' + series + '">Email Address</label><span class="helper-text" data-error="Invalid" data-success="right"></span></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+                        return '<div class="econtent-layer"><div class="fieldbox"><div class="input-field low-marg"><input id="email_' + series + '" class="ei-mail" type="email" class="validate" value="' + address + '"><label for="email_' + series + '">Email Address</label><span class="helper-text" data-error="Invalid" data-success="right"></span></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
                     }
 
                     let layers = '';
@@ -1120,14 +1197,17 @@ function makeEditPanel(contact) {
             return ' <form id="eform" class="eform">' + efixed() + '<div class="progress"><div class="indeterminate"></div></div>' + evarible() + ' <div class="eform-control"><div class="fc-icon undo"><a class="btn-floating waves-effect red tooltipped" data-tooltip="Undo changes" data-position="left"><i class="material-icons">undo</i></a></div><div class="fc-icon save"><a class="btn-floating waves-effect red tooltipped" data-tooltip="Save changes" data-position="right"><i class="material-icons">save</i></a></div></div></form>';
         };
 
-        return '<div class="container econtainer"><div class="epanel z-depth-2"><div class="econtent">' + _form() + '</div><div class="eclose"><i class="material-icons red">close</i></div></div></div>';
+        return '<div class="container econtainer" data-index="' + contact.index + '"><div class="epanel z-depth-2"><div class="econtent">' + _form() + '</div><div class="eclose"><i class="material-icons red">close</i></div></div></div>';
     };
 
     return econtainer();
 }
 
+/**
+ * Closes (destroys) the edit panel.
+ */
 
-function addCloseEditPanelListeners() {
+function closeEditPanelListeners() {
     
     function closeEContainer() {
         const econtainer = document.querySelector('.econtainer');
@@ -1139,6 +1219,11 @@ function addCloseEditPanelListeners() {
         closeEContainer();
     });
 }
+
+/**
+ * Removes an econtent layers from the edit panel
+ * or empties it out if it's the last child.
+ */
 
 function deleleEContentListeners() {
 
@@ -1181,6 +1266,10 @@ function deleleEContentListeners() {
     });
 }
 
+/**
+ * Adds a new layer to the edit panel 
+ * based on the segment type (phone/mail).
+ */
 
 function fieldAdderListeners() {
     const adders = document.querySelectorAll('.adder');
@@ -1191,14 +1280,19 @@ function fieldAdderListeners() {
         
             segment.appendChild(makeLayer(segment));
 
+            // reinitialize content layer delete button listener
             deleleEContentListeners();
         });
 });
 
 }
 
-// Add during edit panel creation.
-// editPanelListeners();
+/**
+ * Generate the DOM string for edit panel's
+ * content layer.
+ * 
+ * @param {HTMLElement} segment 
+ */
 
 function makeLayer(segment) {
 
@@ -1222,15 +1316,15 @@ function makeLayer(segment) {
 
         const series = getLayerCount(segment);
         const type = segment.dataset.type;
-        let eclass='', placeholder = 'Phone Number', itype = 'text', iclass = '', helper = '';
+        let eclass='', placeholder = 'Phone Number', itype = 'text', iclass = 'ei-phone', helper = '';
         
         if (type === 'mail') {
             eclass = 'low-marg';
-            iclass = 'validate';
+            iclass = 'ei-mail validate';
             itype = 'email';
             placeholder = 'Email Address';
             helper ='<span class="helper-text" data-error="Invalid" data-success="Valid"></span>';
-        } 
+        }
 
         const layer_str = '<div class="econtent-layer" data-series="' + series + '"><div class="fieldbox"><div class="input-field ' + eclass + '"><input id="'+ type + '-' + series + '" class="' + iclass + '" type="' + itype  + '" value=""><label for="'+ type + '-' + series + '">' + placeholder + '</label>' + helper + '</div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
 
@@ -1243,16 +1337,286 @@ function makeLayer(segment) {
     return getDOMObject(segment);
 }
 
+/**
+ * Request's an update on the contact in edit panel
+ * to the server and updates UI on response success.
+ */
 
 function saveClickListener() {
     const save = document.querySelector('.eform-control .save');
     save.addEventListener('click', function () {
-        const eform = this.closest('.eform');
+        
+        const econtainer = this.closest('.econtainer');
+        const eform = econtainer.querySelector('.eform');
         const progress = eform.querySelector('.progress');
         progress.style.display = 'block';
-        setTimeout(() => {
-            M.toast({html: 'Contact updated!', classes: 'rounded', displayLength: 2000});
-            progress.style.display = 'none';
-        }, 3000);
+        
+        const index = econtainer.dataset.index;
+        updateCard(index);
+        // setTimeout(() => {
+        //     M.toast({html: 'Contact updated!', classes: 'rounded', displayLength: 2000});
+        //     progress.style.display = 'none';
+        // }, 3000);
     });
 }
+
+/**
+ * Updates the corresponding card opened for edit.
+ * 
+ * @param {Integer} index 
+ */
+
+function updateCard(index) {
+
+    const card = document.getElementById(index);
+    let contact = makeContactObject(card);
+    contact['index'] = index;
+
+    let card_str = makeCards(contact);
+    let card_dom = strToDOM(card_str);
+    card.innerHTML = card_dom.innerHTML;
+    
+    addListeners();
+    addCardEventListeners();
+}
+
+
+/**
+ * Returns a contact object with name and contact keys-pairs.
+ * 
+ * @param {Object} values
+ * 
+ * @return {Object}
+ */
+
+function makeContactObject(card) {
+
+    let contact = {};
+
+    let [color, icon, letter] = fetchOldValues(card);
+
+    contact['color'] = color;
+    contact['icon'] = icon;
+    contact['letter'] = letter;
+
+    const new_values = fetchUpdateValues();
+    
+    contact['name'] = new_values.name.join(' '),
+    contact['contact'] = {
+        phone: new_values.phone,
+        email: new_values.mail
+    }
+
+    return contact;
+}
+
+/**
+ * Return pre-update values from card: 
+ * -> backgrounc-color style
+ * -> icon image src attribute
+ * -> alphabet_level letter
+ * 
+ * @param {HTMLElement} card 
+ */
+
+function fetchOldValues(card) {
+
+    const icon_container = card.querySelector('.icon-container');
+
+    const color = icon_container.style.backgroundColor;
+
+    let icon = '', letter = '';
+
+    // Checks whether there is an img in the icon_container or a text node.
+    if ((icon_container.children.length > 0) && (icon_container.children[0].nodeName == 'IMG')) {
+        icon = icon_container.children[0].src;
+        icon = icon.slice(icon.lastIndexOf('/')+ 1, );
+    } else {
+        const contact_name = card.querySelector('.contact-name span').innerText;
+        letter = contact_name[0];
+    }
+
+    const phones = card.querySelectorAll('.phone-contact');
+    const mails = card.querySelectorAll('.mail-contact');
+
+    return [color, icon, letter];
+}
+
+/**
+ * Fetches value from input field on edit panel
+ * according to name, phone and mail categories.
+ * 
+ * @return {Object}
+ */
+
+function fetchUpdateValues() {
+
+    const epanel = document.querySelector('.econtainer');
+
+    function extractValues(class_name) {
+
+        const node_list = epanel.querySelectorAll('.ei-' + class_name);
+        let values = [];
+
+        node_list.forEach(node => {
+            if (node.value) 
+                values.push(node.value);
+        });
+
+        return values;
+    }
+
+    return {
+        name: extractValues('name'),
+        phone: extractValues('phone'),
+        mail: extractValues('mail') 
+    }
+}
+
+function strToDOM(str) {
+    const html = new DOMParser().parseFromString(str, 'text/html');
+    const dom = html.querySelector('.card-parent');
+    return dom;
+}
+
+/**
+ * Delete contact
+ */
+
+function deleletContact(card) {
+
+    // toggleLoader()
+
+    // let fab = card.querySelector('.fixed-action-btn');
+    // let instance = M.FloatingActionButton.getInstance(fab);
+    // instance.close(fab);
+    const callback = function () {
+        fabClosure();
+        setTimeout(() => {
+            purgeCard(card);
+            toaster('Contact deleted!');
+            removeOverlay();
+        }, 500);   
+    }
+    
+    deleteRequest(callback);
+}
+
+
+function deleteRequest(callback) {
+    return new Promise((resolve, reject) => {
+        const xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                resolve(xmlhttp.responseText);
+            }
+        }   
+        xmlhttp.open('GET', '/delete', true);
+        xmlhttp.send();
+    })
+    .then(data => {
+        callback();
+    })
+    .catch(error => {
+    });
+}
+
+function purgeCard(card) {
+
+    const level = card.closest('.alphabet-level');
+    const row = level.querySelector('.card-container .row');
+
+    if (row.childElementCount == 1) {
+        level.parentNode.removeChild(level);
+    } else {
+        updateLevelCardCount(level, row);
+        card.parentNode.removeChild(card);
+    }
+}
+
+function updateLevelCardCount(level, row) {
+        
+    const contact_count = level.querySelector('.contact-count');
+    const count = row.childElementCount;
+    contact_count.innerText = '(' + count + ')';
+}
+
+/**
+ * Shows / hides loader
+ */
+
+
+function toggleLoader() {
+    const loader = document.querySelector('.loader');
+    loader.style.display = 'block';
+    
+}
+
+function getContactInfo(card) {
+    const contact_name = card.querySelector('.contact-name span').innerText;
+    const icon = function () {
+        const image = card.querySelector('.icon-container');
+        if(image.childElementCount > 0) {
+            let src = image.children[0].src;
+            src = src.slice(src.lastIndexOf('/')+1, );
+            return src;
+        }
+        return '';
+    };
+    function extract (name) {
+        let value_list = [];
+
+        const values = card.querySelectorAll('.' + name + '-contact');
+        values.forEach(value => {
+            if ($.trim(value.innerText)) {
+                value_list.push(value.innerText);
+            }
+        });
+        return value_list;
+    }
+    const phone = extract('phone');
+    const mail = extract('mail');
+
+    return  {
+        icon: icon(),
+        name: contact_name,
+        phone: phone,
+        mail: mail
+    };
+}
+
+
+function downloadCard(contact) {
+    return new Promise((resolve, reject) => {
+        contact = JSON.stringify(contact);
+        const xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                console.log(xmlhttp.response);
+                resolve(xmlhttp.response);
+            }
+        }   
+        xmlhttp.open('GET', '/download?contact=' + contact, true);
+        xmlhttp.send();
+    })
+    .then(data => {
+        // callback();
+        saveCard(data);
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
+function saveCard(data) {
+    const blob = new Blob([data]);
+    const url = window.URL.createObjectURL(blob);
+    let anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'contact.vcf';
+    anchor.click();
+}
+
+// function ()
