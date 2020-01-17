@@ -231,6 +231,10 @@
     color: white;
     font-size: xx-large;
 }
+.eimage img {
+    width: 100%;
+    border-radius: 100%;
+}
 .eimage-controls {
     display: flex;
     width: 100%;

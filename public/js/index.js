@@ -275,10 +275,10 @@ function genRand(min, max) {
  */
 
 function loadLevels(contact_details) {
-
+    let index = 1;
     let element = document.querySelector('.contact-container');
     for (let i = 0; i < contact_details.length; i++) {
-        let card_str = makeLevel(contact_details[i]);
+        [card_str, index] = makeLevel(contact_details[i], index);
         let card_html = new DOMParser().parseFromString(card_str, "text/html");
         let card_body = card_html.querySelector('body .alphabet-level');
         element.appendChild(card_body);
@@ -295,7 +295,7 @@ function loadLevels(contact_details) {
  * @param {Array} contacts 
  */
 
-function makeLevel(contact) {
+function makeLevel(contact, index) {
 
     let alphabet_level = function () {
         let alphabet = function () {
@@ -309,11 +309,11 @@ function makeLevel(contact) {
                 
                 for (let i = 0; i < contact.contacts.length; i++) {
                     let _contact = contact.contacts[i];
-                    _contact['index'] = i + 1;
+                    _contact['index'] = index;
                     _contact['color'] = contact.color;
                     _contact['letter'] = contact.letter;
-                    let card_str = makeCards(_contact);
-                    cards += card_str;
+                    cards += makeCards(_contact);
+                    ++index;
                 }
                 
                 return '<div class="row">' + cards + '</div>';
@@ -325,7 +325,7 @@ function makeLevel(contact) {
         return '<div class="alphabet-level">' + alphabet() + divider + card_container() + '</div>';
     }
     
-    return alphabet_level();
+    return [alphabet_level(), index];
 }
 
 /**
@@ -335,7 +335,7 @@ function makeLevel(contact) {
  */
 
 function makeCards(contact) {
-
+    console.log('herwer', contact);
     let card_panel = function () {
         let icon = function () {
            let content;
@@ -810,38 +810,15 @@ function editClickListener() {
         edit.addEventListener('click', function (e) {
             e.stopPropagation();
             const parent_card = this.closest('.card-parent');
-            
+            console.log(parent_card);
             cardViewToggler(parent_card);
 
             const alphabet_level = this.closest('.alphabet-level');
             const alphabet = alphabet_level.querySelector('.alpha-name').innerText;
 
-            const contacts = JSON.parse(window.localStorage.getItem('contacts'));
-
-            let match;
-            for(let i = 0; i < contacts.length; i++) {
-                if (contacts[i].letter === alphabet) {
-                    match = contacts[i];
-                    break;
-                }
-            }
-
-            const contact_name = alphabet_level.querySelector('.contact-name span').innerText;
-            
-            let clicked_contact
-
-            for(let i = 0; i < match.contacts.length; i++) {
-                if (match.contacts[i].name == contact_name) {
-                    clicked_contact = match.contacts[i];
-                    break;
-                }
-            }
-
-            clicked_contact['letter'] = match.letter;
-            clicked_contact['color'] = match.color;
-            clicked_contact['index'] = parent_card.id;
-    
-            loadEditPanel(clicked_contact);
+            const contact = getContactInfo(parent_card);
+            // console.log(parent_card.id);
+            loadEditPanel(contact);
         });
     });
 }
@@ -1150,13 +1127,13 @@ function makeEditPanel(contact) {
         const _form = function () {
             const efixed = function () {
                 const eimage_container = function () {
-                    const content = contact.icon ? '<img src="img/' + contact.icon + '"' : 
+                    const content = contact.icon ? '<img src="img/' + contact.icon + '">' : 
                     '<span>' + contact.letter + '</span>';
                     
                     return '<div class="eimage-container"><div class="eimage" style="background-color: ' + contact.color + '">' + content + '</div></div>';
                 }
 
-                return ' <div class="efixed-content"><div class="econtent-layer">' + eimage_container() + '<div class="eimage-controls"><a class="waves-effect waves-light btn econtrols change">Change</a><a class="waves-effect waves-light btn econtrols remove">Remove</a></div></div></div>';
+                return '<div class="efixed-content"><div class="econtent-layer">' + eimage_container() + '<div class="eimage-controls"><a class="waves-effect waves-light btn econtrols change">Change</a><a class="waves-effect waves-light btn econtrols remove">Remove</a></div></div></div>';
             };
 
             const evarible = function () {
@@ -1165,17 +1142,17 @@ function makeEditPanel(contact) {
                     const firstname = name[0] || '';
                     const lastname = name[1] || '';
 
-                    return '<div class="segment noadd" data-type="name"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect">person_outline</i>Name</span></div><div class="divider"></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="firstname" type="text" value="' + firstname + '"><label for="firstname">First Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="lastname" type="text" value="' + lastname + '"><label for="lastname">Last Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div></div>';
+                    return '<div class="segment noadd" data-type="name"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect">person_outline</i>Name</span></div><div class="divider"></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="firstname" class="ei-name" type="text" value="' + firstname + '"><label for="firstname">First Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="lastname" class="ei-name" type="text" value="' + lastname + '"><label for="lastname">Last Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div></div>';
                 };
                 const phone_segment = function () {
                     function phoneLayer(series=1, number=null) {
                         
-                        return '<div class="econtent-layer" data-series=' + series + '><div class="fieldbox"><div class="input-field"><input id="phone_' + series + '" type="text" value="' + number + '"><label for="phone_' + series + '">Phone number</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+                        return '<div class="econtent-layer" data-series=' + series + '><div class="fieldbox"><div class="input-field"><input id="phone_' + series + '" class="ei-phone" type="text" value="' + number + '"><label for="phone_' + series + '">Phone number</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
                     }
 
                     let layers = '';
-                    if (contact.contact.phone.length) {
-                        let phones = contact.contact.phone;
+                    if (contact.phone.length) {
+                        let phones = contact.phone;
                         for(let i = 0; i < phones.length; i++) {
                             layers += phoneLayer(i+1, phones[i]);
                         }
@@ -1187,12 +1164,12 @@ function makeEditPanel(contact) {
                 }
                 const mail_segment = function () {
                     function mailLayer(series=1, address=null) {
-                        return '<div class="econtent-layer"><div class="fieldbox"><div class="input-field low-marg"><input id="email_' + series + '" type="email" class="validate" value="' + address + '"><label for="email_' + series + '">Email Address</label><span class="helper-text" data-error="Invalid" data-success="right"></span></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+                        return '<div class="econtent-layer"><div class="fieldbox"><div class="input-field low-marg"><input id="email_' + series + '" class="ei-mail" type="email" class="validate" value="' + address + '"><label for="email_' + series + '">Email Address</label><span class="helper-text" data-error="Invalid" data-success="right"></span></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
                     }
 
                     let layers = '';
-                    if (contact.contact.email.length) {
-                        const mails = contact.contact.email;
+                    if (contact.mail.length) {
+                        const mails = contact.mail;
                         for(let i = 0; i < mails.length; i++) {
                             layers += mailLayer(i+1, mails[0]);
                         }
@@ -1381,10 +1358,9 @@ function saveClickListener() {
  */
 
 function updateCard(index) {
-
+    console.log(index);
     const card = document.getElementById(index);
     let contact = makeContactObject(card);
-    contact['index'] = index;
 
     let card_str = makeCards(contact);
     let card_dom = strToDOM(card_str);
@@ -1405,22 +1381,23 @@ function updateCard(index) {
 
 function makeContactObject(card) {
 
-    let contact = {};
-
-    let [color, icon, letter] = fetchOldValues(card);
-
-    contact['color'] = color;
-    contact['icon'] = icon;
-    contact['letter'] = letter;
-
-    const new_values = fetchUpdateValues();
     
-    contact['name'] = new_values.name.join(' '),
-    contact['contact'] = {
-        phone: new_values.phone,
-        email: new_values.mail
-    }
-
+    let old_contact = getContactInfo(card);
+    const new_values = fetchUpdateValues();
+    console.log(new_values);
+    
+    let contact = {
+        index: old_contact.index,
+        color: old_contact.color,
+        letter: old_contact.letter,
+        icon: old_contact.icon,
+        name: old_contact.name,
+        contact: {
+            phone: new_values.phone,
+            email: new_values.mail
+        }
+    };
+   
     return contact;
 }
 
@@ -1465,7 +1442,8 @@ function fetchOldValues(card) {
 
 function fetchUpdateValues() {
 
-    const epanel = document.querySelector('.econtainer');
+    const epanel = document.querySelector('.econtainer .epanel');
+    console.log(epanel);
 
     function extractValues(class_name) {
 
@@ -1568,7 +1546,12 @@ function toggleLoader() {
 }
 
 function getContactInfo(card) {
+
+    const index = card.id;
+
     const contact_name = card.querySelector('.contact-name span').innerText;
+    const letter = contact_name[0];
+    
     const icon = function () {
         const image = card.querySelector('.icon-container');
         if(image.childElementCount > 0) {
@@ -1578,6 +1561,11 @@ function getContactInfo(card) {
         }
         return '';
     };
+    const color = function () {
+        const icon_container = card.querySelector('.icon-container');
+        return icon_container.style.backgroundColor;
+    }
+
     function extract (name) {
         let value_list = [];
 
@@ -1593,7 +1581,10 @@ function getContactInfo(card) {
     const mail = extract('mail');
 
     return  {
+        index: index,
         icon: icon(),
+        letter: letter,
+        color: color(),
         name: contact_name,
         phone: phone,
         mail: mail
