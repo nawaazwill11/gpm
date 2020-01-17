@@ -354,14 +354,22 @@ function makeCards(contact) {
             let mail_contact = contact.contact.email;
             let phone_count = phone_contact.length;
             let mail_count = mail_contact.length;
+            let html_str;
             let infograph = function () {
                 function infoG(icon, count) {
                     return '<div class="info_g"><i class="material-icons prefix icon">' + icon + '</i><span class="count">' + count + ' </span></div>';
                 }
-                let info_g = infoG('phone', phone_count) + infoG('mail_outline', mail_count);
+                let info_g;
+                if ((mail_count && phone_count)) {
+                    info_g = infoG('phone', phone_count) + infoG('mail_outline', mail_count);
+                } else {
+                    info_g = '';
+                }
                 return '<div class="infograph">' + info_g + '</div>'
             }
+           
             let contact_details = function () {
+                let content = '';
                 function info(icon, list, count) {
 
                     let info = '<div class="contact-content">';
@@ -373,11 +381,16 @@ function makeCards(contact) {
 
                     return info + '</div>';
                 }
+                if (mail_count && phone_count) {
+                    let phone_info = info('phone', phone_contact, phone_count);
+                    let mail_info = info('mail_outline', mail_contact, mail_count);
+                    content = phone_info + mail_info;
+                } else {
+                    content = '<span class="no-info">No Information</span>';
+                }
+                
 
-                let phone_info = info('phone', phone_contact, phone_count);
-                let mail_info = info('mail_outline', mail_contact, mail_count);
-
-                return '<div class="contact-details">' + phone_info + mail_info + '</div>';
+                return '<div class="contact-details">' + content + '</div>';
             }
             let close = '<div class="close red"><i class="material-icons prefix tooltipped-s" data-position="top" data-tooltip="Collapse">clear</i></div>';
             let fab = '<div class="fixed-action-btn toolbar menu"><a class="btn-floating red"><i class="material-icons">menu</i></a> <ul><li class="tooltipped menu-item item_edit" data-position="bottom" data-tooltip="Edit" data-itemname="item_edit"><a class="btn-floating"><i class="material-icons">edit</i></a></li><li class="tooltipped menu-item item_delete" data-position="bottom" data-tooltip="Delete" data-itemname="item_delete"><a class="btn-floating"><i class="material-icons">delete</i></a></li><li class="tooltipped menu-item item_download" data-position="bottom" data-tooltip="Download" data-itemname="item_download"><a class="btn-floating"><i class="material-icons">file_download</i></a></li><li class="tooltipped menu-item item_info" data-position="bottom" data-tooltip="More" data-itemname="item_info"><a class="btn-floating"><i class="material-icons">info</i></a></li></ul></div>';
@@ -1152,12 +1165,12 @@ function makeEditPanel(contact) {
                     const firstname = name[0] || '';
                     const lastname = name[1] || '';
 
-                    return '<div class="segment noadd" data-type="name"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect">person_outline</i>Name</span></div><div class="divider"></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="firstname" class="ei-name" type="text" value="' + firstname + '"><label for="firstname">First Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="lastname" class="ei-name" type="text" value="' + lastname + '"><label for="lastname">Last Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div></div>';
+                    return '<div class="segment noadd" data-type="name"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect">person_outline</i>Name</span></div><div class="divider"></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="firstname" type="text" value="' + firstname + '"><label for="firstname">First Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="lastname" type="text" value="' + lastname + '"><label for="lastname">Last Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div></div>';
                 };
                 const phone_segment = function () {
                     function phoneLayer(series=1, number=null) {
                         
-                        return '<div class="econtent-layer" data-series=' + series + '><div class="fieldbox"><div class="input-field"><input id="phone_' + series + '" class="ei-phone" type="text" value="' + number + '"><label for="phone_' + series + '">Phone number</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+                        return '<div class="econtent-layer" data-series=' + series + '><div class="fieldbox"><div class="input-field"><input id="phone_' + series + '" type="text" value="' + number + '"><label for="phone_' + series + '">Phone number</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
                     }
 
                     let layers = '';
@@ -1174,7 +1187,7 @@ function makeEditPanel(contact) {
                 }
                 const mail_segment = function () {
                     function mailLayer(series=1, address=null) {
-                        return '<div class="econtent-layer"><div class="fieldbox"><div class="input-field low-marg"><input id="email_' + series + '" class="ei-mail" type="email" class="validate" value="' + address + '"><label for="email_' + series + '">Email Address</label><span class="helper-text" data-error="Invalid" data-success="right"></span></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
+                        return '<div class="econtent-layer"><div class="fieldbox"><div class="input-field low-marg"><input id="email_' + series + '" type="email" class="validate" value="' + address + '"><label for="email_' + series + '">Email Address</label><span class="helper-text" data-error="Invalid" data-success="right"></span></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
                     }
 
                     let layers = '';
@@ -1193,6 +1206,7 @@ function makeEditPanel(contact) {
                 return '<div class="evariable-content">' + name_segment() + phone_segment() + mail_segment() + '</div>';
 
             };
+
 
             return ' <form id="eform" class="eform">' + efixed() + '<div class="progress"><div class="indeterminate"></div></div>' + evarible() + ' <div class="eform-control"><div class="fc-icon undo"><a class="btn-floating waves-effect red tooltipped" data-tooltip="Undo changes" data-position="left"><i class="material-icons">undo</i></a></div><div class="fc-icon save"><a class="btn-floating waves-effect red tooltipped" data-tooltip="Save changes" data-position="right"><i class="material-icons">save</i></a></div></div></form>';
         };
@@ -1589,6 +1603,7 @@ function getContactInfo(card) {
 
 function downloadCard(contact) {
     return new Promise((resolve, reject) => {
+        console.log(contact);
         contact = JSON.stringify(contact);
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
@@ -1598,7 +1613,9 @@ function downloadCard(contact) {
                 resolve(xmlhttp.response);
             }
         }   
-        xmlhttp.open('GET', '/download?contact=' + contact, true);
+        xmlhttp.open('POST', '/download/' + contact, true);
+        xmlhttp.setRequestHeader("Content-type", "application/xml");
+        xmlhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
         xmlhttp.send();
     })
     .then(data => {

@@ -17,14 +17,9 @@ class DataController extends Controller
             'contact' => 
             array (
               'phone' => 
-              array (
-                0 => '+919737177329',
-                1 => '+919558484794',
-              ),
+              array (),
               'email' => 
-              array (
-                0 => 'mastermindjim@gmail.com',
-              ),
+              array (),
             ),
           ),
           array (
@@ -113,46 +108,52 @@ class DataController extends Controller
     }
 
     public function delete() {
-      return response('true', 200)
-              ->header('Content-Type', 'text/plain');
+        return response('true', 200)
+                ->header('Content-Type', 'text/plain');
     }
 
-    public function download (Request $request) {
-      $contact = $request('contact');
-      $out = new \Symfony\Component\Console\Output\ConsoleOutput();
-      $out->writeln($contact);
+    public function download (Request $request, $contact) {
 
+    $contact = json_decode($contact, true);
 
-      $vcard = new VCard();
+    // return response()->json($contact);
 
-      // define variables
-      $lastname = 'Desloovere';
-      $firstname = 'Jeroen';
-      $additional = '';
-      $prefix = '';
-      $suffix = '';
+    $vcard = new VCard();
 
-      // add personal data
-      $vcard->addName($lastname, $firstname, $additional, $prefix, $suffix);
+    // define variables
+    $firstname = '';
+    $lastname = '';
+    $name = explode(' ', $contact['name']);
+    if (count($name) > 0) {
+        $firstname = $name[0];
+        if (count($name) > 1) {
+            $lastname = $name[1];
+        }
+    } 
 
-      // add work data
-      $vcard->addCompany('Siesqo');
-      $vcard->addJobtitle('Web Developer');
-      $vcard->addRole('Data Protection Officer');
-      $vcard->addEmail('info@jeroendesloovere.be');
-      $vcard->addPhoneNumber(1234121212, 'PREF;WORK');
-      $vcard->addPhoneNumber(123456789, 'WORK');
-      $vcard->addAddress(null, null, 'street', 'worktown', null, 'workpostcode', 'Belgium');
-      $vcard->addLabel('street, worktown, workpostcode Belgium');
-      $vcard->addURL('http://www.jeroendesloovere.be');
+    $additional = '';
+    $prefix = '';
+    $suffix = '';
 
-      // $vcard->addPhoto(__DIR__ . '/landscape.jpeg');
+    // add personal data
+    $vcard->addName($lastname, $firstname, $additional, $prefix, $suffix);
 
-      // return vcard as a string
-      //return $vcard->getOutput();
+    // add work data
+    for ($i=0; $i < count($contact['phone']); $i++) { 
+        $vcard->addPhoneNumber($contact['phone'][$i], 'WORK');
+    }
+    for ($i=0; $i < count($contact['mail']); $i++) { 
+        $vcard->addEmail($contact['mail'][$i]);
+    }
+    if (strlen($contact['icon']) > 1) {
+        $vcard->addPhoto(public_path() . '\img\\'.$contact['icon']);
+    }
 
-      // return vcard as a download
-      return $vcard->download();
+    // return vcard as a string
+    //return $vcard->getOutput();
+
+    // return vcard as a download
+    return $vcard->download();
 
     }
 }

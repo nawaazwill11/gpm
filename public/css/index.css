@@ -165,6 +165,9 @@
     align-items: center;
     width: 100%;
 }
+.no-info {
+    color: #0000008f;
+}
 .close-expand {
     display: flex;
 }

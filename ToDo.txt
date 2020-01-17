@@ -4,6 +4,8 @@
 #. Remove info icon in detail view.
 #. Empty icon placeholder.
 #. Add Edit View.
+#. Add a No Information label to contacts with no information.
 . Add interaction (phone number=> call, mail => send) buttons.
 . Add smooth transition.
 . Add account picture and name - sidebar and nav.
+. Insert card to appropriate level and position after edit.

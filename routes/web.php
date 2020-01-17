@@ -17,4 +17,4 @@ Route::get('/about', 'HomeController@about');
 Route::get('/loadContacts', 'DataController@load');
 Route::get('/test', 'testController@test');
 Route::get('/delete', 'DataController@delete');
-Route::get('/download', 'DataController@download');
+Route::post('/download/{contact}', 'DataController@download');
