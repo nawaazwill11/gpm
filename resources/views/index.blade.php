@@ -29,7 +29,7 @@
     </div>
 </div>
 <div class="contact-container">
-    <div class="alphabet-level">
+    {{-- <div class="alphabet-level">
         <div class="alphabet">
             <span class="alpha-name">A</span>
             <span class="contact-count">(1)</span>
@@ -124,7 +124,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 {{-- <div class="container _e_container">
     <div class="card-panel hoverable">

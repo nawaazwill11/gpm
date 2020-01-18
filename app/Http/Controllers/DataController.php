@@ -114,46 +114,46 @@ class DataController extends Controller
 
     public function download (Request $request, $contact) {
 
-    $contact = json_decode($contact, true);
+      $contact = json_decode($contact, true);
 
-    // return response()->json($contact);
+      // return response()->json($contact);
 
-    $vcard = new VCard();
+      $vcard = new VCard();
 
-    // define variables
-    $firstname = '';
-    $lastname = '';
-    $name = explode(' ', $contact['name']);
-    if (count($name) > 0) {
-        $firstname = $name[0];
-        if (count($name) > 1) {
-            $lastname = $name[1];
-        }
-    } 
+      // define variables
+      $firstname = '';
+      $lastname = '';
+      $name = explode(' ', $contact['name']);
+      if (count($name) > 0) {
+          $firstname = $name[0];
+          if (count($name) > 1) {
+              $lastname = $name[1];
+          }
+      } 
 
-    $additional = '';
-    $prefix = '';
-    $suffix = '';
+      $additional = '';
+      $prefix = '';
+      $suffix = '';
 
-    // add personal data
-    $vcard->addName($lastname, $firstname, $additional, $prefix, $suffix);
+      // add personal data
+      $vcard->addName($lastname, $firstname, $additional, $prefix, $suffix);
 
-    // add work data
-    for ($i=0; $i < count($contact['phone']); $i++) { 
-        $vcard->addPhoneNumber($contact['phone'][$i], 'WORK');
-    }
-    for ($i=0; $i < count($contact['mail']); $i++) { 
-        $vcard->addEmail($contact['mail'][$i]);
-    }
-    if (strlen($contact['icon']) > 1) {
-        $vcard->addPhoto(public_path() . '\img\\'.$contact['icon']);
-    }
+      // add work data
+      for ($i=0; $i < count($contact['phone']); $i++) { 
+          $vcard->addPhoneNumber($contact['phone'][$i], 'WORK');
+      }
+      for ($i=0; $i < count($contact['mail']); $i++) { 
+          $vcard->addEmail($contact['mail'][$i]);
+      }
+      if (strlen($contact['icon']) > 1) {
+          $vcard->addPhoto(public_path() . '\img\\'.$contact['icon']);
+      }
 
-    // return vcard as a string
-    //return $vcard->getOutput();
+      // return vcard as a string
+      //return $vcard->getOutput();
 
-    // return vcard as a download
-    return $vcard->download();
+      // return vcard as a download
+      return $vcard->download();
 
     }
 }

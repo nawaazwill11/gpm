@@ -11,6 +11,7 @@
 |
 */
 
+
 Route::get('/', 'HomeController@index');
 Route::get('/profile', 'HomeController@profile');
 Route::get('/about', 'HomeController@about');
@@ -18,3 +19,8 @@ Route::get('/loadContacts', 'DataController@load');
 Route::get('/test', 'testController@test');
 Route::get('/delete', 'DataController@delete');
 Route::post('/download/{contact}', 'DataController@download');
+Route::get('/people/auth', 'Auth\PeopleAuthController@auth');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

@@ -119,10 +119,17 @@ function storeLocally(contacts) {
 function contactNamesCapitalize(contacts) {
     
     for(let i = 0; i < contacts.length; i++) {
-        contacts[i].name = contacts[i].name[0].toUpperCase() + contacts[i].name.slice(1, );
+        contacts[i].name = capitalizeString(contacts[i].name);
     }
 
     return contacts;
+}
+
+function capitalizeString(string) {
+    if (string) {
+        return string[0].toUpperCase() + string.slice(1, );
+    }
+    return '';
 }
 
 /**
@@ -284,6 +291,9 @@ function loadLevels(contact_details) {
         element.appendChild(card_body);
     }
 
+    noLevel();
+
+    addLayerCounts();
     // Add event listeners to new cards
     addCardEventListeners();
 }
@@ -299,27 +309,31 @@ function makeLevel(contact, index) {
 
     let alphabet_level = function () {
         let alphabet = function () {
-            return '<div class="alphabet"><span class="alpha-name">' + contact.letter + '</span><span class="contact-count">(' + contact.contacts.length + ')</span></div>';
+            return '<div class="alphabet"><span class="alpha-name">' + contact.letter + '</span><span class="contact-count">()</span></div>';
         }
         
         let divider = '<div class="divider"></div>';
         let card_container = function () {
-            let row = function () {
-                let cards = '';
-                
-                for (let i = 0; i < contact.contacts.length; i++) {
-                    let _contact = contact.contacts[i];
-                    _contact['index'] = index;
-                    _contact['color'] = contact.color;
-                    _contact['letter'] = contact.letter;
-                    cards += makeCards(_contact);
-                    ++index;
+            if (contact['contacts'] !== undefined && contact.contacts.length > 0) {
+                let row = function () {
+                    let cards = '';
+                    
+                    for (let i = 0; i < contact.contacts.length; i++) {
+                        let _contact = contact.contacts[i];
+                        _contact['index'] = index;
+                        _contact['color'] = contact.color;
+                        _contact['letter'] = contact.letter;
+                        cards += makeCards(_contact);
+                        ++index;
+                    }
+                    
+                    return '<div class="row">' + cards + '</div>';
                 }
                 
-                return '<div class="row">' + cards + '</div>';
+                return '<div class="card-container">' + row() + '</div>';
+            } else {
+                return '<div class="card-container"><div class="row"></div></div>';
             }
-            
-            return '<div class="card-container">' + row() + '</div>';
         }
         
         return '<div class="alphabet-level">' + alphabet() + divider + card_container() + '</div>';
@@ -335,7 +349,6 @@ function makeLevel(contact, index) {
  */
 
 function makeCards(contact) {
-    console.log('herwer', contact);
     let card_panel = function () {
         let icon = function () {
            let content;
@@ -402,6 +415,16 @@ function makeCards(contact) {
     }
 
     return '<div id="'+ contact.index + '" class="col x12 s12 m6 l4 xl3 card-parent">' + card_panel() + '</div>';
+}
+
+function addLayerCounts() {
+
+    const levels = document.querySelectorAll('.alphabet-level');
+    // console.log(levels);
+
+    levels.forEach(level => {
+        updateLevelCardCount(level);
+    });
 }
 
 /**
@@ -809,12 +832,10 @@ function editClickListener() {
     edits.forEach(edit => {
         edit.addEventListener('click', function (e) {
             e.stopPropagation();
+            ;
             const parent_card = this.closest('.card-parent');
-            console.log(parent_card);
-            cardViewToggler(parent_card);
 
-            const alphabet_level = this.closest('.alphabet-level');
-            const alphabet = alphabet_level.querySelector('.alpha-name').innerText;
+            cardViewToggler(parent_card);
 
             const contact = getContactInfo(parent_card);
             // console.log(parent_card.id);
@@ -835,7 +856,7 @@ function deleteClickListener() {
             
             const parent = this.closest('.card-parent');
             
-            deleletContact(parent);
+            deleteContact(parent);
         });
     });
 }
@@ -1075,7 +1096,9 @@ function contactToClipboard(value) {
  */
 
 function toaster(msg) {
+    
     M.toast({html: msg});
+    
 }
 
 /**
@@ -1145,7 +1168,7 @@ function makeEditPanel(contact) {
                     return '<div class="segment noadd" data-type="name"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect">person_outline</i>Name</span></div><div class="divider"></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="firstname" class="ei-name" type="text" value="' + firstname + '"><label for="firstname">First Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div><div class="econtent-layer"><div class="fieldbox"><div class="input-field noop"><input id="lastname" class="ei-name" type="text" value="' + lastname + '"><label for="lastname">Last Name</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div></div>';
                 };
                 const phone_segment = function () {
-                    function phoneLayer(series=1, number=null) {
+                    function phoneLayer(series=1, number='') {
                         
                         return '<div class="econtent-layer" data-series=' + series + '><div class="fieldbox"><div class="input-field"><input id="phone_' + series + '" class="ei-phone" type="text" value="' + number + '"><label for="phone_' + series + '">Phone number</label></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
                     }
@@ -1163,7 +1186,7 @@ function makeEditPanel(contact) {
                     return '<div class="segment" data-type="phone"><div class="seg-title"><span class="title"><i class="material-icons small waves-effect ">phone</i>Phone</span></div><div class="divider"></div><div class="bottom-icon"><div class="adder"><i class="material-icons small waves-effect">add_circle</i></div></div>' + layers + '</div>';
                 }
                 const mail_segment = function () {
-                    function mailLayer(series=1, address=null) {
+                    function mailLayer(series=1, address='') {
                         return '<div class="econtent-layer"><div class="fieldbox"><div class="input-field low-marg"><input id="email_' + series + '" class="ei-mail" type="email" class="validate" value="' + address + '"><label for="email_' + series + '">Email Address</label><span class="helper-text" data-error="Invalid" data-success="right"></span></div><div class="side-icon delete-icon"><i class="material-icons waves-effect">remove_circle</i></div></div></div>';
                     }
 
@@ -1199,16 +1222,16 @@ function makeEditPanel(contact) {
  */
 
 function closeEditPanelListeners() {
-    
-    function closeEContainer() {
-        const econtainer = document.querySelector('.econtainer');
-        econtainer.parentNode.removeChild(econtainer);
-    }
  
     const eclose = document.querySelector('.eclose');
     eclose.addEventListener('click', function () {
         closeEContainer();
     });
+}
+
+function closeEContainer() {
+    const econtainer = document.querySelector('.econtainer');
+    econtainer.parentNode.removeChild(econtainer);
 }
 
 /**
@@ -1344,10 +1367,12 @@ function saveClickListener() {
         
         const index = econtainer.dataset.index;
         updateCard(index);
-        // setTimeout(() => {
-        //     M.toast({html: 'Contact updated!', classes: 'rounded', displayLength: 2000});
-        //     progress.style.display = 'none';
-        // }, 3000);
+
+        reindexCards();
+        setTimeout(() => {
+            toaster('Contact updated!');
+            progress.style.display = 'none';
+        }, 2000);
     });
 }
 
@@ -1358,13 +1383,11 @@ function saveClickListener() {
  */
 
 function updateCard(index) {
-    console.log(index);
+    
     const card = document.getElementById(index);
     let contact = makeContactObject(card);
-
-    let card_str = makeCards(contact);
-    let card_dom = strToDOM(card_str);
-    card.innerHTML = card_dom.innerHTML;
+    
+    updateLevel(contact, card);
     
     addListeners();
     addCardEventListeners();
@@ -1381,17 +1404,15 @@ function updateCard(index) {
 
 function makeContactObject(card) {
 
-    
     let old_contact = getContactInfo(card);
     const new_values = fetchUpdateValues();
-    console.log(new_values);
     
     let contact = {
         index: old_contact.index,
         color: old_contact.color,
         letter: old_contact.letter,
         icon: old_contact.icon,
-        name: old_contact.name,
+        name: new_values.name,
         contact: {
             phone: new_values.phone,
             email: new_values.mail
@@ -1443,7 +1464,6 @@ function fetchOldValues(card) {
 function fetchUpdateValues() {
 
     const epanel = document.querySelector('.econtainer .epanel');
-    console.log(epanel);
 
     function extractValues(class_name) {
 
@@ -1458,16 +1478,55 @@ function fetchUpdateValues() {
         return values;
     }
 
+    const name = function () {
+        const names = extractValues('name');
+        return $.trim(capitalizeString(names[0]) + ' ' + capitalizeString(names[1]));
+    } 
+
     return {
-        name: extractValues('name'),
+        name: name(),
         phone: extractValues('phone'),
         mail: extractValues('mail') 
     }
 }
 
+function updateLevel(contact, card) {
+
+    const card_str = makeCards(contact);
+    const new_card = strToDOM(card_str);
+    
+    const level = getWorkingLevel(contact.name[0]);
+    
+    const old_level = card.closest('.alphabet-level');
+    
+    // Purges card if level changed.
+    
+    if (level !== old_level) {
+        deleteContact(card, true);
+    }
+
+    const valid_cards = [new_card, ...getLevelCards(level, card)];
+
+    // Sort cards.
+    let level_cards = sortedCards(valid_cards);
+    
+    // Ready the container.
+    let container = level.querySelector('.card-container .row');
+
+    // Empty it out.
+    container.innerHTML = '';
+
+    // Adds sorted cards.
+    for (let i = 0; i < level_cards.length; i++) {
+        container.appendChild(level_cards[i]);
+    }
+    updateLevelCardCount(level);
+}
+
 function strToDOM(str) {
     const html = new DOMParser().parseFromString(str, 'text/html');
     const dom = html.querySelector('.card-parent');
+    // console.log('body', html.querySelector('body').innerHTML);
     return dom;
 }
 
@@ -1475,7 +1534,7 @@ function strToDOM(str) {
  * Delete contact
  */
 
-function deleletContact(card) {
+function deleteContact(card, silent=false) {
 
     // toggleLoader()
 
@@ -1486,7 +1545,10 @@ function deleletContact(card) {
         fabClosure();
         setTimeout(() => {
             purgeCard(card);
-            toaster('Contact deleted!');
+            if (!silent) {
+                console.log(silent);
+                toaster('Contact deleted!');
+            }
             removeOverlay();
         }, 500);   
     }
@@ -1522,16 +1584,21 @@ function purgeCard(card) {
     if (row.childElementCount == 1) {
         level.parentNode.removeChild(level);
     } else {
-        updateLevelCardCount(level, row);
         card.parentNode.removeChild(card);
+        updateLevelCardCount(level);
     }
+    noLevel();
 }
 
-function updateLevelCardCount(level, row) {
+function updateLevelCardCount(level) {
         
+    const row = level.querySelector('.card-container .row');
     const contact_count = level.querySelector('.contact-count');
     const count = row.childElementCount;
+
     contact_count.innerText = '(' + count + ')';
+
+    return level;
 }
 
 /**
@@ -1627,4 +1694,101 @@ function saveCard(data) {
     anchor.click();
 }
 
-// function ()
+function getWorkingLevel(letter) {
+
+    const alphabets = document.querySelectorAll('.alpha-name');
+    let alphabet;
+
+    // Get the alphabet matching the current card letter
+    for (let i = 0; i < alphabets.length; i++) {
+        if ($.trim(alphabets[i].innerText) === letter) {
+            alphabet = alphabets[i];
+            break;
+        }
+    }
+
+    if (alphabet) {
+        return  alphabet.closest('.alphabet-level');
+    }
+    else {
+        return  updateLevelCardCount(getNewLevel(letter));
+    }
+
+}
+
+function getNewLevel(letter) {
+    let contact = [
+        {
+            letter: letter
+        }
+    ];
+    loadLevels(contact);
+    return getWorkingLevel(letter)
+}
+
+function sortedCards(cards) {
+    console.log('before sort', cards);
+    const len = cards.length;
+
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            const name = $.trim(cards[j].querySelector('.contact-name span').innerText);
+            const name_1 = $.trim(cards[j + 1].querySelector('.contact-name span').innerText);
+            if (name > name_1) {
+                let temp = cards[j];
+                cards[j] = cards[j + 1];
+                cards[j + 1] = temp;
+            }
+        }
+    }
+    console.log('after sort', cards);
+    return cards;
+}
+
+function getCardContactNames(cards) {
+
+    cards.forEach(card => {
+
+    })
+}
+
+function sortCardsByName() {
+
+}
+
+function getLevelCards(level, card) {
+
+
+    const cards = level.querySelectorAll('.card-parent');
+
+    // Cards that will be added to the level
+    let valid_cards = []
+
+    // Select  cards which do not match the edited card (id).
+    cards.forEach(_card => {
+        if (_card != card) {
+            valid_cards.push(_card);
+        }
+    });
+
+    // console.log('valid', valid_cards);
+    return valid_cards;
+}
+
+function noLevel() {
+    const container = document.querySelector('.contact-container');
+    if (container.childElementCount == 0) {
+        const norow = document.createElement('div');
+        norow.className = 'norow';
+        norow.innerHTML = '<p>No information</p>';
+        container.appendChild(norow);
+    }
+}
+
+function reindexCards() {
+    const cards = document.querySelectorAll('.card-parent');
+    
+    for(let i = 0; i < cards.length; i++) {
+        cards[i].id = i + 1;
+    }
+}

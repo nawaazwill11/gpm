@@ -5,7 +5,11 @@
 #. Empty icon placeholder.
 #. Add Edit View.
 #. Add a No Information label to contacts with no information.
+#. Insert card to appropriate level and position after edit.
+#. Re-id cards on update
 . Add interaction (phone number=> call, mail => send) buttons.
 . Add smooth transition.
 . Add account picture and name - sidebar and nav.
-. Insert card to appropriate level and position after edit.
+. Validate edit inputs.
+. Change card icon letter on update
+. Add capability to update names with lowercase.

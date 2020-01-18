@@ -1,0 +1,56 @@
+.body {
+    font-size: 16px;
+}
+.container {
+    position: absolute;
+    height: 90vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.panel {
+    height: fit-content;
+    width: 50%;
+    margin-top: 50px;
+    padding: 20px;
+}
+.content-title p {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #18181899;
+}
+.connection {
+    display: flex;
+    align-items: center;
+}
+.authorize {
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    border-bottom: 1px solid lightgray;
+}
+.authorize a {
+    line-height: unset !important;
+    height: unset !important;
+    min-width: 150px;
+    display: flex;
+    align-items: center;
+}
+.authorize a i {
+    font-size: 3.5rem;
+}
+.authorize a span {
+    font-size: 22px;
+    font-weight: 500;
+}
+.status p {
+    font-size: large;
+
+}
+.dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 100%;
+    background-color: red;
+    margin-right: 10px;
+}
