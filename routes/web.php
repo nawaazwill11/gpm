@@ -11,16 +11,29 @@
 |
 */
 
-
-Route::get('/', 'HomeController@index');
-Route::get('/profile', 'HomeController@profile');
-Route::get('/about', 'HomeController@about');
-Route::get('/loadContacts', 'DataController@load');
-Route::get('/test', 'testController@test');
-Route::get('/delete', 'DataController@delete');
-Route::post('/download/{contact}', 'DataController@download');
-Route::get('/people/auth', 'Auth\PeopleAuthController@auth');
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// App navigation
+Route::get('/', 'NavController@index')->name('home');
+Route::get('/profile', 'NavController@profile')->name('profile');
+Route::get('/about', 'NavController@about')->name('about');
+Route::get('/people', 'NavController@people')->name('people');
+Route::get('/authorized', 'NavController@authorized')->name('authorized');
+
+// Contacts api routes
+Route::get('/loadContacts', 'DataController@load');
+Route::get('/delete', 'DataController@delete');
+Route::post('/download/{contact}', 'DataController@download');
+
+// People Api routes
+Route::get('/people/auth', 'PeopleApiController@auth');
+Route::get('/people/ping', 'PeopleApiController@ping');
+Route::get('/people/redirect', 'PeopleApiController@redirect');
+
+// Testing
+// Route::get('/test', 'Auth\PeopleAuthController@sessionAdder');
+Route::get('/test', 'testController@test');
+Route::get('/getclient', 'PeopleApiController@api');
+Route::get('/cacheget', 'testController@cacheGet');
+Route::get('/cacheset', 'testController@cacheSet');
+Route::get('/cacheempty', 'testController@cacheEmpty');

@@ -11,6 +11,27 @@ nav ul li a {
     font-size: 1.5rem;
 }
 
+#nav-user a {
+    display: flex;
+    align-items: center;
+}
+.logout-option {
+    position: absolute;
+    opacity: 0;
+    top: -100px;
+    background-color: white;
+    transition: top 0.3s ease, opacity 0.5s;
+    z-index: 10;
+}
+.logout-option a {
+    color: #ff1744;
+}
+
+.lg-active {
+    opacity: 1;
+    top: 70px;
+}
+
 @media screen and (max-width: 1410px) {
     .card-parent {
         width: 33.3333333333% !important;

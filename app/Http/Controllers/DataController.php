@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App;
+
 use Illuminate\Http\Request;
 
 use JeroenDesloovere\VCard\VCard;
@@ -156,4 +158,5 @@ class DataController extends Controller
       return $vcard->download();
 
     }
+    
 }

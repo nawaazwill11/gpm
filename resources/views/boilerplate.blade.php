@@ -1,7 +1,12 @@
 @extends('layouts.common')
 
 @section('title')
-{{-- page title --}}
+Authorization - 
+    @if ($success)
+        Complete
+    @else
+        Failed
+    @endif
 @endsection
 
 @section('css-assets')
@@ -9,7 +14,7 @@
 @endsection
 
 @section('content')
-{{-- body content --}}
+{{-- content --}}
 @endsection
 
 @section('js-assets')

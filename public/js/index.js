@@ -527,7 +527,6 @@ function outsideCardClick(target) {
 
     if (! target.closest('.contact-card')) {
         const opened_card = document.querySelector('.card-active');
-        console.log(opened_card);
         // hide cards only if the clicked target is a card
         // else it'll through null error for card not found error.
         if (opened_card) {
