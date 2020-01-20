@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Main\HomeLoad;
+
 class NavController extends Controller
 {
     /**
@@ -21,7 +23,9 @@ class NavController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index() {
+    public function index() 
+    {
+        $ops = new HomeLoad();
         return view('index');
     }
     

@@ -13,3 +13,4 @@
 . Add account picture and name - sidebar and nav.
 . Validate edit inputs.
 . Change card icon letter on update
+. Tooltip on close buttons.
