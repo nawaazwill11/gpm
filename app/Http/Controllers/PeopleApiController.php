@@ -34,13 +34,14 @@ class PeopleApiController extends Controller
         $people_auth = new PeopleAuth();
         $authorized = $people_auth->reauth($request);
         
-        // @param ['success' => bool]
+        // @param ['success' => bool] 
         return view('authorized', ['success' => $authorized]);
     }
 
-    public function initLoad()
+    public function load()
     {
         $crud = new CRUD();
-        return response($load->getAllContacts());
+        return response($crud->getAllContacts(), 200)
+                ->header('Content-Type', 'application/json');
     }
 }

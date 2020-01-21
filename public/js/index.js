@@ -20,7 +20,7 @@ window.onload = async function () {
 
 function initializeInterface(data) {
 
-    if (data.sucess) {
+    if (data.success) {
         // Initiate card loading process.
         generateLevels(data.contacts);
 
@@ -68,7 +68,7 @@ function fetchContactDetails() {
                 resolve(JSON.parse(xmlhttp.responseText));
             }
         }   
-        xmlhttp.open('GET', '/loadContacts', true);
+        xmlhttp.open('GET', '/people/loadContacts', true);
         xmlhttp.send();
     })
     .then(data => {
@@ -368,7 +368,7 @@ function makeCards(contact) {
         let icon = function () {
            let content;
            if (contact.icon) {
-               content = '<img src="img/' + contact.icon + '">'
+               content = '<img src="' + contact.icon + '">'
            } else {
                content = contact.letter;
            }
@@ -382,22 +382,20 @@ function makeCards(contact) {
             let mail_contact = contact.contact.email;
             let phone_count = phone_contact.length;
             let mail_count = mail_contact.length;
-            let html_str;
+
             let infograph = function () {
                 function infoG(icon, count) {
                     return '<div class="info_g"><i class="material-icons prefix icon">' + icon + '</i><span class="count">' + count + ' </span></div>';
                 }
-                let info_g;
-                if ((mail_count && phone_count)) {
-                    info_g = infoG('phone', phone_count) + infoG('mail_outline', mail_count);
-                } else {
-                    info_g = '';
-                }
+                let info_g = '';
+                if (phone_count) info_g += infoG('phone', phone_count);
+                if (mail_count)  info_g += infoG('mail_outline', mail_count);
+
                 return '<div class="infograph">' + info_g + '</div>'
             }
            
             let contact_details = function () {
-                let content = '';
+
                 function info(icon, list, count) {
 
                     let info = '<div class="contact-content">';
@@ -409,14 +407,11 @@ function makeCards(contact) {
 
                     return info + '</div>';
                 }
-                if (mail_count && phone_count) {
-                    let phone_info = info('phone', phone_contact, phone_count);
-                    let mail_info = info('mail_outline', mail_contact, mail_count);
-                    content = phone_info + mail_info;
-                } else {
-                    content = '<span class="no-info">No Information</span>';
-                }
+                let content = '';
+                if (phone_count) content += info('phone', phone_contact, phone_count);
+                if (mail_count) content += info('mail_outline', mail_contact, mail_count);
                 
+                if (!content) content = '<span class="no-info">No Information</span>';                
 
                 return '<div class="contact-details">' + content + '</div>';
             }
@@ -1164,7 +1159,7 @@ function makeEditPanel(contact) {
         const _form = function () {
             const efixed = function () {
                 const eimage_container = function () {
-                    const content = contact.icon ? '<img src="img/' + contact.icon + '">' : 
+                    const content = contact.icon ? '<img src="' + contact.icon + '">' : 
                     '<span>' + contact.letter + '</span>';
                     
                     return '<div class="eimage-container"><div class="eimage" style="background-color: ' + contact.color + '">' + content + '</div></div>';
@@ -1637,7 +1632,6 @@ function getContactInfo(card) {
         const image = card.querySelector('.icon-container');
         if(image.childElementCount > 0) {
             let src = image.children[0].src;
-            src = src.slice(src.lastIndexOf('/')+1, );
             return src;
         }
         return '';

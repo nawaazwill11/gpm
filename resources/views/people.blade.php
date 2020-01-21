@@ -5,7 +5,7 @@ Google People Authentication
 @endsection
 
 @section('css-assets')
-<link rel="stylesheet" href="{{ asset('/css/gpauth.css') }}">
+<link rel="stylesheet" href="{{ asset('/css/gpauth.css', true) }}">
 @endsection
 
 @section('content')
@@ -23,9 +23,6 @@ Google People Authentication
                         <div class="tip">
                             <p>To use GPA, you will need to allow GPA access your google account.<br>Please click the Authorize button below and follow the instruction on screen to complete the authorization process.</p>
                         </div>
-                        {{-- <div class="close-tip">
-                            <i class="material-icons">close</i>
-                        </div> --}}
                     </div>
                     <div class="content-layer">
                         <div class="authorize">
@@ -65,5 +62,5 @@ Google People Authentication
 @endsection
 
 @section('js-assets')
-<script src="{{ asset('js/gpauth.js') }}"></script>
+<script src="{{ asset('js/gpauth.js', true) }}"></script>
 @endsection

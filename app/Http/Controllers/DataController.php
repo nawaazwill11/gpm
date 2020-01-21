@@ -105,7 +105,7 @@ class DataController extends Controller
             ),
           ),
         );
-        return response($contacts, 200)
+        return response(array('success' => true, 'contacts' => $contacts), 200)
                 ->header('Content-Type', 'application/json');
     }
 

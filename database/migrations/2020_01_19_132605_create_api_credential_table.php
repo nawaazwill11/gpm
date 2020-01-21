@@ -15,7 +15,7 @@ class CreateApiCredentialTable extends Migration
     {
         Schema::create('api_credential', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->jsonb('token');
+            $table->jsonb('credential');
             $table->timestamps();
         });
     }

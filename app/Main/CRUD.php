@@ -12,13 +12,10 @@ class CRUD
 
         $fetch = new PeopleFetch();
 
-        $raw_contacts=  $fetch->fetchAll;
+        $contacts=  $fetch->fetchAll();
 
-
-
-        // $raw_contact = $fetch->fetchAll($this->client);
-        // if (!$raw_contacts) return  array('success'=> false);
-        // $parser =  new ContactParser();   
+        if ($contacts) return array('success' => 'true', 'contacts' => $contacts);
+        return array('success' => false);
     }
     
 }

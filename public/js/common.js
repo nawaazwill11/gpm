@@ -11,7 +11,6 @@ $(document).ready(function(){
 
 function navEventListners() {
     const nav_user = document.getElementById('nav-user');
-    console.log(nav_user);
     nav_user.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopImmediatePropagation();

@@ -1,12 +1,7 @@
 @extends('layouts.common')
 
 @section('title')
-Authorization - 
-    @if ($success)
-        Complete
-    @else
-        Failed
-    @endif
+
 @endsection
 
 @section('css-assets')
