@@ -38,3 +38,4 @@ Route::get('/getclient', 'PeopleApiController@api');
 Route::get('/cacheget', 'testController@cacheGet');
 Route::get('/cacheset', 'testController@cacheSet');
 Route::get('/cacheempty', 'testController@cacheEmpty');
+Route::get('/fetch', 'testController@fetchContacts');

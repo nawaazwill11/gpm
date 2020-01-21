@@ -11,30 +11,29 @@ class PeopleAuth
     {
         // Contact api for client authorization.
         $people = new PeopleLib();
-
-        // Create new Google People Client
-        $people->setClient();
-
-        // Set token (from DB) to he client.
-        $is_set = $people->setTokenToClient();
         
-        // Set up a response.
-        $response = array (
-            'fresh' => false
-        );
+        // Create a response array.
+        $response = array();
 
-        // If token wasn't set, generate a new one.
-        if (!$is_set) {
-            // Generate new token by access this URL.
-            $authURL = $people->generateNewToken();
-
+        // Client is set and valid.
+        // No fresh authentication needed.
+        if($people->setClient())
+        {
+            $response =  array(
+                'fresh' => false
+            );
+        }
+        // Get a new access token.
+        else 
+        {
+            $authURL = $people->generateAuthUrl();
             $response = array (
                 'fresh' => true,
                 'url' => $authURL
             );
         }
 
-        return json_encode($response);
+        return $response;
     }
 
     public function reauth($request)

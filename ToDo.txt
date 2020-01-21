@@ -14,3 +14,4 @@
 . Validate edit inputs.
 . Change card icon letter on update
 . Tooltip on close buttons.
+. Change comments for client as google instance if written people instance.

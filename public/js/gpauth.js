@@ -58,10 +58,12 @@ function authClickListner() {
         console.log(response);
         if (response.error) onError(response.error.error);
         else if(response.fresh) {
+            console.log(response.fresh);
             redirect(response.url); // Redirect to signin.
             ping(); // Ping and wait for authorization.
         }
         else {
+            console.log('here');
             onSuccess();
         }
     }
@@ -99,6 +101,7 @@ function authClickListner() {
     }
 
     function redirect(url) {
+        console.log('redirected', url);
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('target', '_blank');

@@ -25,7 +25,6 @@ class NavController extends Controller
      */
     public function index() 
     {
-        $ops = new HomeLoad();
         return view('index');
     }
     

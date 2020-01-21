@@ -35,8 +35,16 @@ class PeopleLib
         // Get the client.
         $this->client = $this->getClient();
         
-        // Cache the client.
+        // Returns ready to use people instance with access token set.
+        if ($this->setTokenToClient())
+        {
+            return $this->client;
+        }
+
+        // Store client to use if redirected for authorization.
         $this->cacheClient();
+        
+        return false;
     }
 
     public function getClient() 
@@ -45,7 +53,7 @@ class PeopleLib
 
         // Client setup
         $client->setApplicationName('Google People Alternative');
-        $client->setScopes(Google_Service_PeopleService::CONTACTS_READONLY);
+        $client->setScopes(Google_Service_PeopleService::CONTACTS, Google_Service_PeopleService::USERINFO_PROFILE);
         $credentials = PeopleDB::getApiCredentials();
         $client->setClientId($credentials['client_id']);
         $client->setClientSecret($credentials['client_secret']);
@@ -93,7 +101,7 @@ class PeopleLib
     }
 
 
-    public function generateNewToken() 
+    public function generateAuthUrl() 
     {
         // Stores the client in cache before redirect.
         $this->cacheClient();

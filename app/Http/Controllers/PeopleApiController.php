@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Main\PeopleAuth;
 use App\Main\PeoplePing;
+use App\Main\CRUD;
 use App\Http\Controllers\Controller;
 
 
@@ -35,5 +36,11 @@ class PeopleApiController extends Controller
         
         // @param ['success' => bool]
         return view('authorized', ['success' => $authorized]);
+    }
+
+    public function initLoad()
+    {
+        $crud = new CRUD();
+        return response($load->getAllContacts());
     }
 }

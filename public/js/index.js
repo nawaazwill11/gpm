@@ -4,10 +4,10 @@ var g_card = null;
 window.onload = async function () {
 
     // Fetch contact-details list.
-    let contacts = await fetchContactDetails();
+    let data = await fetchContactDetails();
 
     // Begin response unpacking and card manufacturing.
-    initializeInterface(contacts);
+    initializeInterface(data);
 
 }
 
@@ -18,18 +18,33 @@ window.onload = async function () {
  * @param {Object} contacts 
  */
 
-function initializeInterface(contacts) {
+function initializeInterface(data) {
 
-    if (contacts) {
+    if (data.sucess) {
         // Initiate card loading process.
-        generateLevels(contacts);
+        generateLevels(data.contacts);
 
         // Add event listeners to cards.
         addListeners();
 
+    } else {
+        loadBlankScreen(true);
     }
 }
 
+/**
+ * Loads a blank screen if there are 
+ * no contacts to be shown.
+ */
+
+function loadBlankScreen(bool) {
+    const blank_screen = document.querySelector('.blank-screen');
+    if (bool) {
+        blank_screen.style.display = 'flex';
+    } else {
+        blank_screen.style.display = 'none';
+    }
+}
 
 function initFAB() {
     $('.fixed-action-btn').floatingActionButton({
