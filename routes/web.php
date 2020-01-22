@@ -23,11 +23,11 @@ Route::get('/authorized', 'NavController@authorized')->name('authorized');
 
 // Contacts api routes
 Route::get('/delete', 'DataController@delete');
-Route::post('/download/{contact}', 'DataController@download');
+Route::post('/download', 'DataController@download');
 
 // People Api routes
-// Route::get('/people/loadContacts', 'PeopleApiController@load');
-Route::get('/people/loadContacts', 'DataController@load');
+Route::get('/people/loadContacts', 'PeopleApiController@load');
+// Route::get('/people/loadContacts', 'DataController@load');
 Route::get('/people/auth', 'PeopleApiController@auth');
 Route::get('/people/ping', 'PeopleApiController@ping');
 Route::get('/people/redirect', 'PeopleApiController@redirect');

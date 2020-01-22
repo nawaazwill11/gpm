@@ -114,9 +114,9 @@ class DataController extends Controller
                 ->header('Content-Type', 'text/plain');
     }
 
-    public function download (Request $request, $contact) {
+    public function download (Request $request) {
 
-      $contact = json_decode($contact, true);
+      $contact = json_decode($request->contact, true);
 
       // return response()->json($contact);
 
@@ -147,12 +147,12 @@ class DataController extends Controller
       for ($i=0; $i < count($contact['mail']); $i++) { 
           $vcard->addEmail($contact['mail'][$i]);
       }
-      if (strlen($contact['icon']) > 1) {
-          $vcard->addPhoto(public_path() . '\img\\'.$contact['icon']);
-      }
+      // if (strlen($contact['icon']) > 1) {
+      //     $vcard->addPhoto(public_path() . '\img\\'.$contact['icon']);
+      // }
 
       // return vcard as a string
-      //return $vcard->getOutput();
+      // return response($vcard);
 
       // return vcard as a download
       return $vcard->download();

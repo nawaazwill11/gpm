@@ -283,7 +283,7 @@ function addColor(contacts) {
     for (let i = 0; i < contacts.length; i++) {
         contacts[i]['color'] = colors[genRand(0, colors.length)];
     }
-    consoler(contacts);
+    
 }
 
 /**
@@ -1612,7 +1612,6 @@ function deleteContact(card, silent=false) {
         setTimeout(() => {
             purgeCard(card);
             if (!silent) {
-                console.log(silent);
                 toaster('Contact deleted!');
                 toggleLoader();
             }
@@ -1724,23 +1723,43 @@ function getContactInfo(card) {
     };
 }
 
+// function downloadCard(contact) {
+//     let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+//     $.ajax({
+//         /* the route pointing to the post function */
+//         url: '/download',
+//         type: 'POST',
+//         /* send the csrf-token and the input to the controller */
+//         data: {_token: CSRF_TOKEN, contact:contact},
+//         dataType: 'JSON',
+//         async: true,
+//         /* remind that 'data' is the response of the AjaxController */
+//         success: function (data) { 
+//            saveCard(data);
+//         },
+//         error: function(data) {
+//            saveCard(data)
+//         }
+//     }); 
+// }
 
 function downloadCard(contact) {
+
+    let form = new FormData();
+    form.append('contact', JSON.stringify(contact));
+
     return new Promise((resolve, reject) => {
-        console.log(contact);
-        contact = JSON.stringify(contact);
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
 
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                console.log(xmlhttp.response);
                 resolve(xmlhttp.response);
             }
         }   
-        xmlhttp.open('POST', '/download/' + contact, true);
-        xmlhttp.setRequestHeader("Content-type", "application/xml");
+        xmlhttp.open('POST', 'download/', true);
+        // xmlhttp.setRequestHeader("Content-type", "application/json");
         xmlhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
-        xmlhttp.send();
+        xmlhttp.send(form);
     })
     .then(data => {
         // callback();
@@ -1752,6 +1771,7 @@ function downloadCard(contact) {
 }
 
 function saveCard(data) {
+    console.log(data);
     const blob = new Blob([data]);
     const url = window.URL.createObjectURL(blob);
     let anchor = document.createElement('a');
@@ -1793,7 +1813,6 @@ function getNewLevel(letter) {
 }
 
 function sortedCards(cards) {
-    console.log('before sort', cards);
     const len = cards.length;
 
     for (let i = 0; i < len; i++) {
@@ -1807,7 +1826,6 @@ function sortedCards(cards) {
             }
         }
     }
-    console.log('after sort', cards);
     return cards;
 }
 
@@ -1918,8 +1936,8 @@ function scrollToElement(pageElement) {
         // such that if the parent is at some offset 
         // other than 0. it will add the parents offset as well.
 		pageElement = pageElement.offsetParent;        
-	}
-    console.log(pageElement);
+    }
+    
 	window.scroll({
 		top: positionY,
 		left: positionX,
