@@ -21,8 +21,8 @@
             <form class="col xs12 search">
             <div class="input-field col xs12">
                 <i class="material-icons prefix">search</i>
-                <textarea id="contact_search" class="materialize-textarea search-autocomplete"></textarea>
-                <label for="contact_search">Search</label>
+                <input type="text" id="contact-search" class="autocomplete">
+                <label for="contact-search">Search contacts</label>
             </div>
             </form>
         </div>

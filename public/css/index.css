@@ -76,6 +76,7 @@
     justify-content: space-between;
     width: 60px;
     margin-right: 12px;
+    text-align: right;
 }
 .info_g {
     display: flex;
@@ -401,13 +402,6 @@
 }
 /* eform media queries */
 
-@media screen and (min-height: 876px) {
-
-    .bottom-icon {
-        justify-content: center;
-    }
-    
-}
 @media screen and (min-width: 600px) {
     
     .epanel {
@@ -441,4 +435,15 @@
     justify-content: center;
     align-items: center;
     color: #0000008f;
+}
+
+@media screen and (min-height: 876px) {
+
+    .bottom-icon {
+        justify-content: center;
+    }
+    
+}
+.boxed  {
+    box-shadow: 0 0 2px 1px #f44336a8;
 }

@@ -6605,7 +6605,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         if (e.type === 'keyup') {
           Autocomplete._keydown = false;
         }
-
+        
         this.count = 0;
         var val = this.el.value.toLowerCase();
 

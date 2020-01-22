@@ -1,9 +1,15 @@
 // Stores recently clicked card
 var g_card = null;
+
+// List of callbacks on document click
+var callbacks = {
+    document: {
+        click: [outsideCardClick]
+    }
+}
+//Shows Loader
 toggleLoader();
 window.onload = async function () {
-
-    
 
     // Fetch contact-details list.
     let data = await fetchContactDetails();
@@ -11,8 +17,8 @@ window.onload = async function () {
     // Begin response unpacking and card manufacturing.
     initializeInterface(data);
 
+    // Hides loader.
     toggleLoader();
-
 }
 
 /**
@@ -301,6 +307,7 @@ function genRand(min, max) {
  */
 
 function loadLevels(contact_details) {
+
     let index = 1;
     let element = document.querySelector('.contact-container');
     for (let i = 0; i < contact_details.length; i++) {
@@ -311,10 +318,15 @@ function loadLevels(contact_details) {
     }
 
     noLevel();
+    
+    // Adds number of contact cards per alphabetic level
+    addLevelCounts();
 
-    addLayerCounts();
     // Add event listeners to new cards
     addCardEventListeners();
+
+    // Update search autcomplete data
+    updateSeachData();
 }
 
 
@@ -419,7 +431,7 @@ function makeCards(contact) {
 
                 return '<div class="contact-details">' + content + '</div>';
             }
-            let close = '<div class="close red"><i class="material-icons prefix tooltipped-s" data-position="top" data-tooltip="Collapse">clear</i></div>';
+            let close = '<div class="close red"><i class="material-icons prefix tooltipped" data-position="top" data-tooltip="Collapse">clear</i></div>';
             let fab = '<div class="fixed-action-btn toolbar menu"><a class="btn-floating red"><i class="material-icons">menu</i></a> <ul><li class="tooltipped menu-item item_edit" data-position="bottom" data-tooltip="Edit" data-itemname="item_edit"><a class="btn-floating"><i class="material-icons">edit</i></a></li><li class="tooltipped menu-item item_delete" data-position="bottom" data-tooltip="Delete" data-itemname="item_delete"><a class="btn-floating"><i class="material-icons">delete</i></a></li><li class="tooltipped menu-item item_download" data-position="bottom" data-tooltip="Download" data-itemname="item_download"><a class="btn-floating"><i class="material-icons">file_download</i></a></li><li class="tooltipped menu-item item_info" data-position="bottom" data-tooltip="More" data-itemname="item_info"><a class="btn-floating"><i class="material-icons">info</i></a></li></ul></div>';
             
             return '<div class="card-content">' + name + infograph() + contact_details() + close + fab +'</div>';
@@ -431,7 +443,7 @@ function makeCards(contact) {
     return '<div id="'+ contact.index + '" class="col x12 s12 m6 l4 xl3 card-parent">' + card_panel() + '</div>';
 }
 
-function addLayerCounts() {
+function addLevelCounts() {
 
     const levels = document.querySelectorAll('.alphabet-level');
     // console.log(levels);
@@ -527,7 +539,10 @@ function documentListeners() {
 
     document.addEventListener('click', function (e) {
         // Outside-card clicks
-        outsideCardClick(e.target);
+        callbacks.document.click.forEach(callback => {
+            callback(e.target);
+        });
+        
     });
 }
 
@@ -1417,10 +1432,13 @@ function saveClickListener() {
         updateCard(index);
 
         reindexCards();
+        
         setTimeout(() => {
             toaster('Contact updated!');
             progress.style.display = 'none';
         }, 2000);
+
+        updateSeachData();
     });
 }
 
@@ -1596,7 +1614,9 @@ function deleteContact(card, silent=false) {
             if (!silent) {
                 console.log(silent);
                 toaster('Contact deleted!');
+                toggleLoader();
             }
+            updateSeachData();
             removeOverlay();
         }, 500);   
     }
@@ -1837,4 +1857,84 @@ function reindexCards() {
     for(let i = 0; i < cards.length; i++) {
         cards[i].id = i + 1;
     }
+}
+
+function updateSeachData() {
+    const search = document.getElementById('contact-search');
+    const data = getContactNameObj()
+
+    M.Autocomplete.init(search, {data: data, onAutocomplete: postSearch});
+}
+
+function getContactNameObj() {
+    const names = document.querySelectorAll('.contact-name span');
+
+    let names_list =  Array.from(names).map(name_elem => {
+        const name = $.trim(name_elem.innerText);
+        if (name) return name;
+    });
+
+    return names_list.reduce((obj, name) => {
+        _obj = {
+            name: name
+        }
+        return {
+            ...obj,
+            [_obj['name']]: null
+        }
+    }, {});
+}
+
+function postSearch() {
+    const search = document.querySelector('#contact-search');
+    const selected_name = search.value;
+
+    const names = document.querySelectorAll('.contact-name span');
+    let card;
+    for (let i = 0; i < names.length; i++) {
+        if ($.trim(names[i].innerText) == selected_name) {
+            card = names[i].closest('.card-parent');
+            break;
+        }
+    }
+    
+    scrollToElement(card);
+    addClass(card, 'boxed');
+
+    setTimeout(function () {
+       
+        document.addEventListener('click', unbox);
+    }, 500);
+}
+
+function scrollToElement(pageElement) {
+	let positionX = 0,         
+    	positionY = 0;    
+
+	while(pageElement != null){       
+		positionX += pageElement.offsetLeft;  
+        positionY += pageElement.offsetTop;
+        // Adds offset of parent (body in most cases)
+        // such that if the parent is at some offset 
+        // other than 0. it will add the parents offset as well.
+		pageElement = pageElement.offsetParent;        
+	}
+    console.log(pageElement);
+	window.scroll({
+		top: positionY,
+		left: positionX,
+		behavior: 'smooth'
+	});
+}
+
+function unbox() {
+    // callbacks.document.click.pop();
+    // documentRelisten();
+    document.removeEventListener('click', unbox);
+    const cards = document.querySelectorAll('.card-parent');
+
+    cards.forEach(card => {
+        removeClass(card, 'boxed');
+    });
+
 }

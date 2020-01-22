@@ -41,7 +41,7 @@ class ContactParser
                     }
                 }
                 $contact = array(
-                    'icon' => $icon,
+                    'icon' => '',
                     'name' => $name,
                     'contact' => array(
                         'phone' => $phone,

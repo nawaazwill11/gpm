@@ -9,11 +9,11 @@
 #. Re-id cards on update
 #. Add capability to update names with lowercase.
 #. Loading page while home page loads.
-. Add interaction (phone number=> call, mail => send) buttons.
-. Add smooth transition.
-. Add account picture and name - sidebar and nav.
-. Validate edit inputs.
-. Change card icon letter on update
-. Tooltip on close buttons.
+#. Add interaction (phone number=> call, mail => send) buttons.
+#. Change card icon letter on update
+#. Add smooth transition.
+x. Add account picture and name - sidebar and nav.
+x. Validate edit inputs.
+#. Tooltip on close buttons.
 . Change comments for client as google instance if written people instance.
 . Add search cap.
