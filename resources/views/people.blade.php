@@ -5,23 +5,23 @@ Google People Authentication
 @endsection
 
 @section('css-assets')
-<link rel="stylesheet" href="{{ asset('/css/gpauth.css', true) }}">
+<link rel="stylesheet" href="{{ asset('/css/gpauth.css') }}">
 @endsection
 
 @section('content')
 <div class="container">
     <div class="row">
         <div class="flexbox">
-            <div class="col s10 m8 l6 z-depth-2 panel">
+            <div class="col s11 m8 l6 z-depth-2 panel">
                 <div class="content">
                     <div class="content-layer">
                         <div class="content-title">
-                            <p>Authorize Google People</p>
+                            <p>Authorize With Google People</p>
                         </div>
                     </div>
                     <div class="content-layer ">
                         <div class="tip">
-                            <p>To use GPA, you will need to allow GPA access your google account.<br>Please click the Authorize button below and follow the instruction on screen to complete the authorization process.</p>
+                            <p>To use GPA, you will need to allow GPA to access your Google account.<br>Please click the Authorize button below and follow the instruction on screen to complete the authorization process.</p>
                         </div>
                     </div>
                     <div class="content-layer">
@@ -62,5 +62,5 @@ Google People Authentication
 @endsection
 
 @section('js-assets')
-<script src="{{ asset('js/gpauth.js', true) }}"></script>
+<script src="{{ asset('js/gpauth.js') }}"></script>
 @endsection

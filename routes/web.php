@@ -16,7 +16,7 @@ Auth::routes();
 // App navigation
 Route::get('/', 'NavController@index')->name('index');
 Route::get('/home', 'NavController@index')->name('home');
-Route::get('/profile', 'NavController@profile')->name('profile');
+Route::get('/profile', 'NavController@people')->name('profile');
 Route::get('/about', 'NavController@about')->name('about');
 Route::get('/people', 'NavController@people')->name('people');
 Route::get('/authorized', 'NavController@authorized')->name('authorized');

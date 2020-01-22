@@ -109,3 +109,16 @@ p {
     background-color: red;
     margin-right: 10px;
 }
+
+@media screen and (max-width: 600px) {
+    .authorize a i {
+        font-size: 2.5rem;
+    }
+    .authorize a span {
+        font-size: unset;
+    }
+    .preloader-wrapper {
+        width: 30px !important;
+        height: 30px !important;
+    }
+}

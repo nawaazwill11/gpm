@@ -1,13 +1,17 @@
 // Stores recently clicked card
 var g_card = null;
-
+toggleLoader();
 window.onload = async function () {
+
+    
 
     // Fetch contact-details list.
     let data = await fetchContactDetails();
 
     // Begin response unpacking and card manufacturing.
     initializeInterface(data);
+
+    toggleLoader();
 
 }
 
@@ -402,7 +406,7 @@ function makeCards(contact) {
                     let contact_type = icon.search(/mail/) >= 0 ? 'mail' : 'phone';
 
                     for (let i = 0; i < count; i++) {
-                        info += '<div class="info"><i class="material-icons prefix icon">' + icon + '</i><span class="contact ' + contact_type + '-contact">' + list[i] + '</span></div>';
+                        info += '<div class="info"><div class="info-content"><div class="contact-icon"><i class="material-icons prefix icon">' + icon + '</i></div><span class="contact ' + contact_type + '-contact">' + list[i] + '</span></div></div>';
                     }
 
                     return info + '</div>';
@@ -669,6 +673,7 @@ function toggleCardImage(card, callback) {
 function toggleCardContent(card, callback) {
 
     const card_content = card.querySelector('.card-content');
+    const contact_name = card.querySelector('.contact-name');
     const infograph = card.querySelector('.infograph');
     const contact_details = card.querySelector('.contact-details');
 
@@ -676,6 +681,7 @@ function toggleCardContent(card, callback) {
         card_content.children[0].style.flex = 0;
         infograph.style.display = 'none';
         contact_details.style.display = 'flex';
+        addClass(contact_name, 'contact-name-expand');
         assignGcard(card);
         toggleCollapseButton(card, true);
         toggleFAB(card, true);
@@ -684,6 +690,7 @@ function toggleCardContent(card, callback) {
         card_content.children[0].style.flex = 1;
         infograph.style.display = 'flex';
         contact_details.style.display = 'none';
+        removeClass(contact_name, 'contact-name-expand');
         nullifyGCard();
         toggleCollapseButton(card, false);
         toggleFAB(card, false);
@@ -785,7 +792,7 @@ function toggleFAB(card, bool) {
 
     const fab = card.querySelector('.menu');
     if (bool) {
-        fab.style.display = 'block';
+        fab.style.display = 'flex';
     } else {
         fab.style.display = 'none';
     }
@@ -1072,11 +1079,42 @@ function toastableContact() {
 
     const infos = document.querySelectorAll('.info');
     infos.forEach(info => {
-        info.addEventListener('click', function () {
-            const contact = info.querySelector('.contact').innerText;
-            contactToClipboard(contact);
+        // info.addEventListener('click', function () {
+        //     const contact = info.querySelector('.contact').innerText;
+        //     contactToClipboard(contact);
+        // });
+        info.addEventListener('mouseenter', function () {
+            info.prepend(strToDOM('<div class="actions"><ul class="action-list"><li class="copy">Copy</li><li class="divider"></li><li class="open">Open</li></ul></div>', 'actions'));
+            
+            const actions = info.querySelector('.actions');
+           
+            const action_list = actions.children[0];
+            // console.log(action_list);
+            const copy = action_list.children[0];
+            // console.log(copy)
+            copy.addEventListener('click', function () {
+                const value = info.querySelector('.contact').innerText;
+                contactToClipboard(value);
+            });
+            
+            const open = action_list.children[2];
+            open.addEventListener('click', function (e) {
+                const contact = info.querySelector('.contact');
+                const value = contact.innerText;
+                const type = contact.classList[1] == 'phone-contact' ? 'tel' : 'mailto'
+                const a = document.createElement('a');
+                a.href = type + ':' + value;
+                document.querySelector('body').appendChild(a);
+                a.click();
+                a.remove();
+            });
         });
-    })
+        info.addEventListener('mouseleave', function () {
+            const actions = info.querySelector('.actions');
+            actions.parentNode.removeChild(actions);
+            const qinfo = $(info);
+        });
+    });
 }
 
 
@@ -1241,6 +1279,7 @@ function closeEditPanelListeners() {
 function closeEContainer() {
     const econtainer = document.querySelector('.econtainer');
     econtainer.parentNode.removeChild(econtainer);
+    removeOverlay();
 }
 
 /**
@@ -1502,7 +1541,7 @@ function fetchUpdateValues() {
 function updateLevel(contact, card) {
 
     const card_str = makeCards(contact);
-    const new_card = strToDOM(card_str);
+    const new_card = strToDOM(card_str, 'card-parent');
     
     const level = getWorkingLevel(contact.name[0]);
     
@@ -1532,9 +1571,9 @@ function updateLevel(contact, card) {
     updateLevelCardCount(level);
 }
 
-function strToDOM(str) {
+function strToDOM(str, class_name) {
     const html = new DOMParser().parseFromString(str, 'text/html');
-    const dom = html.querySelector('.card-parent');
+    const dom = html.querySelector('.' + class_name);
     // console.log('body', html.querySelector('body').innerHTML);
     return dom;
 }
@@ -1545,7 +1584,7 @@ function strToDOM(str) {
 
 function deleteContact(card, silent=false) {
 
-    // toggleLoader()
+    toggleLoader()
 
     // let fab = card.querySelector('.fixed-action-btn');
     // let instance = M.FloatingActionButton.getInstance(fab);
@@ -1617,8 +1656,7 @@ function updateLevelCardCount(level) {
 
 function toggleLoader() {
     const loader = document.querySelector('.loader');
-    loader.style.display = 'block';
-    
+    loader.style.display = loader.style.display == 'block' ? 'none' : 'block';
 }
 
 function getContactInfo(card) {

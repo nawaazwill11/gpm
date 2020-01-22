@@ -37,7 +37,8 @@ class testController extends Controller
     {
         // dd(Google_Service_PeopleService::CONTACTS);
         $fetch = new PeopleFetch();
-        $fetch->fetchAll();
+        $contact = $fetch->fetchAll();
+        dd($contact);
     }
 
 }
