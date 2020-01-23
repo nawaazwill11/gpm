@@ -29,7 +29,8 @@ class NavController extends Controller
     }
     
     public function profile() {
-        return view('profile');
+        $password = user()->getAuthPassword();
+        return view('profile', ['password' => $password]);
     }
 
     public function about() {
@@ -41,5 +42,8 @@ class NavController extends Controller
     }
     public function authorized() {
         return view('authorized');
+    }
+    public function reset() {
+        return view('auth.passwords.reset');
     }
 }

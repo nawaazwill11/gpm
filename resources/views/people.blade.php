@@ -55,6 +55,43 @@ Google People Authentication
                     </div>
                 </div>
             </div>
+            <div class="col s11 m8 l6 z-depth-2 panel">
+                <div class="content">
+                    <div class="content-layer">
+                        <div class="content-title">
+                            <p>Security</p>
+                        </div>
+                    </div>
+                    <div class="content-layer">
+                        <div class="form-inputs">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="old_password" type="password" class="validate">
+                                    <label for="old_password">Old Password</label>
+                                    <span class="helper-text" data-error="wrong" data-success="right"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="new_password" type="password" class="validate">
+                                    <label for="new_password">New Password</label>
+                                    <span class="helper-text" data-error="wrong" data-success="right"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="re_password" type="password" class="validate">
+                                    <label for="re_password">Re-enter Password</label>
+                                    <span class="helper-text" data-error="wrong" data-success="right" style="color:red"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-controls">
+                            <a id="submit" class="waves-effect waves-light btn btn-large red">Change</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     

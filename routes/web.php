@@ -19,7 +19,7 @@ Route::get('/home', 'NavController@index')->name('home');
 Route::get('/profile', 'NavController@people')->name('profile');
 Route::get('/about', 'NavController@about')->name('about');
 Route::get('/people', 'NavController@people')->name('people');
-Route::get('/authorized', 'NavController@authorized')->name('authorized');
+// Route::get('/authorized', 'NavController@authorized')->name('authorized');
 
 // Contacts api routes
 Route::get('/delete', 'DataController@delete');
@@ -32,6 +32,11 @@ Route::get('/people/auth', 'PeopleApiController@auth');
 Route::get('/people/ping', 'PeopleApiController@ping');
 Route::get('/people/redirect', 'PeopleApiController@redirect');
 
+// Profile 
+Route::get('/getauth', 'DataController@getAuth')->name('getauth');
+Route::get('/removeauth', 'DataController@removeAuth')->name('removeauth');
+Route::post('/reset', 'DataController@reset')->name('reset');
+
 // Testing
 // Route::get('/test', 'Auth\PeopleAuthController@sessionAdder');
 Route::get('/test', 'testController@test');
@@ -40,3 +45,4 @@ Route::get('/cacheget', 'testController@cacheGet');
 Route::get('/cacheset', 'testController@cacheSet');
 Route::get('/cacheempty', 'testController@cacheEmpty');
 Route::get('/fetch', 'testController@fetchContacts');
+Route::get('/authen', 'testController@authen');

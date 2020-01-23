@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Libraries\_Cache;
 use App\Libraries\PeopleFetch;
 use App\Http\Controllers\PeopleApiController;
-
+use Illuminate\Support\Facades\Auth;
 use Google_Service_PeopleService;
 
 
@@ -41,4 +41,13 @@ class testController extends Controller
         dd($contact);
     }
 
+    public function authen() 
+    {
+        $credentials = ['email' => 'nawaaz@gmail.com', 'password' => 'devrootadmin##'];
+        if (Auth::attempt($credentials)) {
+            return response('passed');
+        }
+        return response('failed');
+        
+    }
 }

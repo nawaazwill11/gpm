@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash; 
+use Illuminate\Support\Facades\Auth;
+
+use App\Libraries\PeopleLib;
 
 use JeroenDesloovere\VCard\VCard;
-
 class DataController extends Controller
 {
     public function load() {
@@ -159,4 +162,40 @@ class DataController extends Controller
 
     }
     
+    public function reset(Request $request)
+    {
+        $form = json_decode($request->form, true);
+
+        $old = $form['old'];
+        $new = $form['new'];
+      
+        if ($new) {
+            $credentials = ['email' => auth()->user()->email, 'password' => $old];
+            if (Auth::attempt($credentials)) {
+                $new_hash = Hash::make($new);
+                $user = App\User::where('id', auth()->user()->id)->first();
+                $user->password = $new_hash;
+                $user->save();
+                return response('true', 200);
+            }
+            return response('Current password not valid', 200);
+        }
+        return response('Got empty password', 200);
+    }
+
+    public function getAuth() 
+    {
+        $people = new PeopleLib();
+        if ($people->setClient()) {
+            return response('true', 200);
+        }
+        return response('false', 200);
+    }
+
+    public function removeAuth() {
+        $id = auth()->user()->id;
+        $access_token = new App\AccessToken;
+        $access_token::where('user_id', $id)->delete();
+        return response('true', 200);
+    }
 }
